@@ -10,13 +10,18 @@ class Student extends Component {
   }
 
   componentDidMount(){
-    askQuestion("I don't understand");
+//    askQuestion("I don't understand");
   }
 
+   ask(){
+    askQuestion("I don't understand");
+
+   }
 
   render() {
     return (
           <div>
+          <button onClick={() => this.ask()}>Ask</button>
           </div>
     );
   }

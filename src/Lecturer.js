@@ -16,17 +16,17 @@ class Lecturer extends Component {
       questionMap
     }));
 
-//    onQuestionReceived((err, questionTally) => {
-//        console.log("received")
-////      this.setState({
-////        questionMap: this.state.questionsMap.set(questionTally.question, questionTally.number)
-////      })
-//    });
+    onQuestionReceived((err, questionTally) => {
+        let map = this.state.questionMap;
+//        map.set(questionTally.question, questionTally.number);
+      this.setState({
+        questionMap: map
+      })
+    });
   }
 
 
   render() {
-    console.log(this.state.questionMap)
     return (
        <div>
        <p>Lecturer</p>
