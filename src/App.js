@@ -15,9 +15,6 @@ class App extends Component {
     return (
        <Router>
           <div className="App">
-            <p className="App-intro">
-            This is the timer value: {this.state.timestamp}
-            </p>
           <Route exact path='/'
                 render={() => <Student/>}
               />
