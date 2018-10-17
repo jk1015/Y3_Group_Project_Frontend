@@ -15,12 +15,12 @@ class Student extends Component {
 
    ask(){
     askQuestion("I don't understand");
-
    }
 
   render() {
     return (
           <div>
+          <p>Student</p>
           <button onClick={() => this.ask()}>Ask</button>
           </div>
     );

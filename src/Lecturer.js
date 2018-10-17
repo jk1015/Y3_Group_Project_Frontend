@@ -12,13 +12,17 @@ class Lecturer extends Component {
         questionMap: new HashMap()
     }
 
-    connectLecturer((err, questionMap) => this.setState({
-      questionMap
-    }));
+    connectLecturer((err, questionMap) =>{
+      let map = new HashMap();
+      map.copy(questionMap)
+      this.setState({
+        questionMap: map
+    })
+  });
 
     onQuestionReceived((err, questionTally) => {
-        let map = this.state.questionMap;
-//        map.set(questionTally.question, questionTally.number);
+      let map = this.state.questionMap;
+      map.set(questionTally.question, questionTally.number);
       this.setState({
         questionMap: map
       })
