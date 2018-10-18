@@ -4,12 +4,14 @@ cache:
   paths:
     - node_modules/
 
+# Runs test suite on all commits
 testing:
   stage: test
   script:
     - npm install
     - npm test
 
+# Deploys all commits on master branch to heroku using DPL (a ruby script)
 production:
   stage: deploy
   image: ruby:latest
