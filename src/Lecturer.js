@@ -29,10 +29,9 @@ class Lecturer extends Component {
     });
   }
 
-listQuestion()
-{
+listQuestion() {
   var i;
-  var askedQuestions="";
+  let askedQuestions=""
   for(i in this.state.questionMap)
   {
     askedQuestions+=this.state.questionMap[i].toString()+"<br>";
