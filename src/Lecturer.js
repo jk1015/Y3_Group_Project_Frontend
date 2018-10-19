@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { connectLecturer, onQuestionReceived } from './api';
+import { onClearAll, clearAll, connectLecturer, onQuestionReceived } from './api';
 const HashMap = require('hashmap');
 
 class Lecturer extends Component {
@@ -17,8 +17,8 @@ class Lecturer extends Component {
       map.copy(questionMap)
       this.setState({
         questionMap: map
-    })
-  });
+      })
+    });
 
     onQuestionReceived((err, questionTally) => {
       let map = this.state.questionMap;
@@ -27,14 +27,17 @@ class Lecturer extends Component {
         questionMap: map
       })
     });
+
+    onClearAll(() => {
+          let map = new HashMap();
+          this.setState({
+            questionMap: map
+        })
+    });
+
   }
 
-  onClearAll() =>{
-        let map = new HashMap();
-        this.setState({
-          questionMap: map
-      })
-  });
+
 
   render() {
     var questions = new Array();
@@ -51,6 +54,9 @@ class Lecturer extends Component {
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p>
+         <div id="Clear">
+           <button onClick={()=>clearAll()}>CLEAR ALL!</button>
+         </div>
          <div>{questions}</div>
 
        </div>

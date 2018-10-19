@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Student from './Student';
 import Lecturer from './Lecturer';
-import SelectIdentity from './SelectIdentity';
+import SelectIdentity from './selectIdentity';
 
 class App extends Component {
 

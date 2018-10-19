@@ -1,6 +1,6 @@
 import openSocket from 'socket.io-client';
 //change to heroku for deployment
-const socket = openSocket('http://localhost:8080');
+const socket = openSocket('group26-backend.herokuapp.com');
 
 function askQuestion(question) {
     socket.emit('question asked', question)
@@ -23,4 +23,4 @@ function clearAll() {
     socket.emit('clear all');
 }
 
-export { askQuestion, onQuestionReceived, connectLecturer }
+export { onClearAll, clearAll, askQuestion, onQuestionReceived, connectLecturer }
