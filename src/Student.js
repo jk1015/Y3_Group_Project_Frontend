@@ -77,7 +77,7 @@ class Student extends Component {
   constructor(props) {
     super(props);
     this.state = {
-     data: 'Question',
+     data: '',
      questions: []
     }
     this.updateQuestionField = this.updateQuestionField.bind(this);
@@ -123,7 +123,23 @@ class Student extends Component {
           </form>
           <button onClick={this.ask}>ASK</button>
         </div>
-        <Questions value={this.state.questions}/>
+        <div id="Understand">
+          <h2>I DON'T UNDERSTAND</h2>
+          <button onClick={()=>askQuestion("I don't understand")}>ASK</button>
+        </div>
+        <div id="Example">
+          <h2>Could you give an example?</h2>
+          <button onClick={()=>askQuestion("Could you give an example?")}>ASK</button>
+        </div>
+        <div id="Slower">
+          <h2>Could you slow down?</h2>
+          <button onClick={()=>askQuestion("Could you slow down?")}>ASK</button>
+        </div>
+        <div id="Faster">
+          <h2>Could you speed up?</h2>
+          <button onClick={()=>askQuestion("Could you speed up?")}>ASK</button>
+        </div>
+        <Questions value={this.state.questions} />
       </div>
     );
   }
