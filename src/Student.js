@@ -41,7 +41,7 @@ var header =
 function Header() {
   return (
     <div id="header">
-      <p>Student Room</p>
+      <p>Student Page</p>
     </div>
   );
 }
@@ -62,7 +62,7 @@ class Student extends Component {
   constructor(props) {
     super(props);
     this.state = {
-     data: 'Question'
+     data: ''
     }
     this.updateQuestionField = this.updateQuestionField.bind(this);
     this.ask = this.ask.bind(this);
