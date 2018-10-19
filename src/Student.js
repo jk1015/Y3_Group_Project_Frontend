@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 
-import { askQuestion } from './api';
+import { askQuestion, onClearAll } from './api';
 import { onQuestionReceived } from './api';
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
 var htmlToReactParser = new HtmlToReactParser();
+const HashMap = require('hashmap');
 var html_page =
       '<script src="/socket.io/socket.io.js"></script>' +
       '<script>' +
@@ -41,31 +42,56 @@ var header =
 function Header() {
   return (
     <div id="header">
-      <p>Student Page</p>
+      <p>Student Room</p>
     </div>
   );
 }
 
-// function Questions() {
-//
-//   return (
-//
-//   );
-// }
+function makeQuestion(question) {
+  return <div class="question">
+           <p>{question}</p>
+         </div>;
+}
+
+function Questions(props) {
+  let i;
+  let questions = props.value;
+  let res = <p>No questions received! {questions[questions-1]}</p>;
+  if (questions.length > 0) {
+    res = <p>{questions[questions.length-1]}</p>
+  }
+  console.log("Haya Q");
+
+  for (i = 0; i < questions.length; i++) {
+//    questions.push(makeQuestion());
+//    res = <p>res{questions.get(i)}</p>
+  }
+
+  return (
+    res
+  );
+}
 
 var jsx_page = htmlToReactParser.parse(html_page);
 var jsx_header = htmlToReactParser.parse(header);
 class Student extends Component {
 
-
-
   constructor(props) {
     super(props);
     this.state = {
-     data: ''
+     data: 'Question',
+     questions: []
     }
     this.updateQuestionField = this.updateQuestionField.bind(this);
     this.ask = this.ask.bind(this);
+    console.log("Haya Q");
+
+    onQuestionReceived((err, questionTally) => {
+      let questions = this.state.questions;
+      questions.push(questionTally.question);
+      this.setState({data: this.state.data + questions.length,
+        questions: questions});
+    });
   }
 
   componentDidMount(){
@@ -77,7 +103,7 @@ class Student extends Component {
   }
 
   updateQuestionField(e) {
-    this.setState({data: e.target.value});
+    this.setState({data: e.target.value, questions: this.state.questions});
   }
 
   render() {
@@ -92,26 +118,10 @@ class Student extends Component {
           </form>
           <button onClick={this.ask}>ASK</button>
         </div>
-        <div id="Understand">
-          <h2>I DON'T UNDERSTAND</h2>
-          <button onClick={()=>askQuestion("I don't understand")}>ASK</button>
-        </div>
-        <div id="Example">
-          <h2>Could you give an example?</h2>
-          <button onClick={()=>askQuestion("Could you give an example?")}>ASK</button>
-        </div>
-        <div id="Slower">
-          <h2>Could you slow down?</h2>
-          <button onClick={()=>askQuestion("Could you slow down?")}>ASK</button>
-        </div>
-        <div id="Faster">
-          <h2>Could you speed up?</h2>
-          <button onClick={()=>askQuestion("Could you speed up?")}>ASK</button>
-        </div>
+        <Questions value={this.state.questions} />
       </div>
     );
   }
 }
-
 
 export default Student;
