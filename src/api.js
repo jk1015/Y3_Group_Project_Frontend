@@ -15,4 +15,12 @@ function connectLecturer(cb) {
     socket.emit('lecturer connect');
 }
 
+function onClearAll(cb) {
+    socket.on('on clear all', () => cb());
+}
+
+function clearAll() {
+    socket.emit('clear all');
+}
+
 export { askQuestion, onQuestionReceived, connectLecturer }
