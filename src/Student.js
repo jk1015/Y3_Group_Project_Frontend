@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { askQuestion, onClearAll } from './api';
-import { onQuestionReceived } from './api';
+import { onQuestionReceived, Header } from './api';
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
 var htmlToReactParser = new HtmlToReactParser();
@@ -38,14 +38,6 @@ var header =
 // function printMsg(q) {
 //   console.log(q);
 // }
-
-function Header() {
-  return (
-    <div id="header">
-      <p>Student Room</p>
-    </div>
-  );
-}
 
 function makeQuestion(question) {
   return '<div class="question">' +
@@ -114,7 +106,7 @@ class Student extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header value="Student Room"/>
         <div id="Question_box">
           <h2>ASK A QUESTION</h2>
           <form id="Question_form">

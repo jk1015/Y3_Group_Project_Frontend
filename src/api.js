@@ -1,4 +1,6 @@
 import openSocket from 'socket.io-client';
+import React, { Component } from 'react';
+
 //change to heroku for deployment
 const socket = openSocket('group26-backend.herokuapp.com');
 
@@ -22,5 +24,14 @@ function onClearAll(cb) {
 function clearAll() {
     socket.emit('clear all');
 }
-  
-export { onClearAll, clearAll, askQuestion, onQuestionReceived, connectLecturer }
+
+function Header(props) {
+  return (
+    <div id="header">
+      <p>{props.value}</p>
+    </div>
+  );
+}
+
+export { onClearAll, clearAll, askQuestion, onQuestionReceived, connectLecturer ,
+ Header}

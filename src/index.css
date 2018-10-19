@@ -51,6 +51,14 @@ code {
   padding: 5px;
 }
 
+.button_info {
+  background-color: transparent;
+  border-radius: 5px;
+  border: 1px solid white;
+  color: white;
+  padding: 5px;  
+}
+
 #Question_box button:hover {
   background-color: pink;
 }
