@@ -1,4 +1,5 @@
 import openSocket from 'socket.io-client';
+//change to heroku for deployment
 const socket = openSocket('http://localhost:8080');
 
 function askQuestion(question) {
@@ -12,6 +13,14 @@ function onQuestionReceived(cb) {
 function connectLecturer(cb) {
     socket.on('on lecturer connect', questionMap => cb(null, questionMap));
     socket.emit('lecturer connect');
+}
+
+function onClearAll(cb) {
+    socket.on('on clear all', () => cb());
+}
+
+function clearAll() {
+    socket.emit('clear all');
 }
 
 export { askQuestion, onQuestionReceived, connectLecturer }

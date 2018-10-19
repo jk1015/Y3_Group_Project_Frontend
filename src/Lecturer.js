@@ -29,11 +29,30 @@ class Lecturer extends Component {
     });
   }
 
+  onClearAll() =>{
+        let map = new HashMap();
+        this.setState({
+          questionMap: map
+      })
+  });
 
   render() {
+    var questions = new Array();
+    this.state.questionMap.keys().forEach(
+           function(key) {
+             questions.push(<div>{key}: {this.state.questionMap.get(key)}</div>);
+           }, this)
+
     return (
        <div>
-       <p>Lecturer</p>
+         <p>Lecturer</p>
+           <tr></tr>
+         <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
+         <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
+         <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
+         <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p>
+         <div>{questions}</div>
+
        </div>
     );
   }

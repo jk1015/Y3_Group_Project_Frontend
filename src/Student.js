@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { askQuestion } from './api';
+import { askQuestion, onClearAll } from './api';
 import { onQuestionReceived } from './api';
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
