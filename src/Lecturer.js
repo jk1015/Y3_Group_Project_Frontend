@@ -29,7 +29,7 @@ class Lecturer extends Component {
     });
   }
 
-  onClearAll(() =>{
+  onClearAll() =>{
         let map = new HashMap();
         this.setState({
           questionMap: map
