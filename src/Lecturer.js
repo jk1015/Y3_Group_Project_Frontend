@@ -29,11 +29,25 @@ class Lecturer extends Component {
     });
   }
 
+/*String listQuestion()
+{
+  var i;
+  Array arr=this.state.questionMap.entries();
+  String askedQuestions;
+  for(i=0;i<arr.length;i++)
+  {
+    asked
+  }
+}*/
+
 
   render() {
     return (
        <div>
-       <p>Lecturer</p>
+         <p>Lecturer</p>
+           <tr></tr>
+         <p className="DontUnderstarndText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
+         <p>{this.state.questionMap.entries().toString()}</p>
        </div>
     );
   }
