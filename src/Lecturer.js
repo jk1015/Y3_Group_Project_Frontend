@@ -49,7 +49,7 @@ listQuestion()
          <p>Lecturer</p>
            <tr></tr>
          <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
-         <p>{this.listQuestion}</p>
+         <p></p>
        </div>
     );
   }

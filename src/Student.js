@@ -94,19 +94,19 @@ class Student extends Component {
         </div>
         <div id="Understand">
           <h2>I DON'T UNDERSTAND</h2>
-          <button onClick={askQuestion("I don't understand")}>ASK</button>
+          <button onClick={()=>askQuestion("I don't understand")}>ASK</button>
         </div>
         <div id="Example">
           <h2>Could you give an example?</h2>
-          <button onClick={askQuestion("Could you give an example?")}>ASK</button>
+          <button onClick={()=>askQuestion("Could you give an example?")}>ASK</button>
         </div>
         <div id="Slower">
           <h2>Could you slow down?</h2>
-          <button onClick={askQuestion("Could you slow down?")}>ASK</button>
+          <button onClick={()=>askQuestion("Could you slow down?")}>ASK</button>
         </div>
         <div id="Faster">
           <h2>Could you speed up?</h2>
-          <button onClick={askQuestion("Could you speed up?")}>ASK</button>
+          <button onClick={()=>askQuestion("Could you speed up?")}>ASK</button>
         </div>
       </div>
     );
