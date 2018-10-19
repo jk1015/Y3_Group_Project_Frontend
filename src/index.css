@@ -28,3 +28,36 @@ code {
   margin-top: 100px;
   display: inline-block;
 }
+
+#Question_box {
+  margin-top: 100px;
+  width: 400px;
+  height: 250px;
+  border: 10px solid pink;
+  background-color: #e6526c;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  text-align: center;
+  color: white;
+  font-size: 1.5em;
+}
+
+#Question_box button {
+  background-color: transparent;
+  border-radius: 5px;
+  border: 1px solid white;
+  color: white;
+  padding: 5px;
+}
+
+#Question_box button:hover {
+  background-color: pink;
+}
+
+#Question_form input {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  margin-bottom: 10px;
+}

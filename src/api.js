@@ -6,7 +6,7 @@ function askQuestion(question) {
 }
 
 function onQuestionReceived(cb) {
-    socket.on('question received', questionTally => cb(null, questionTally));
+   socket.on('question received', questionTally => cb(null, questionTally));
 }
 
 function connectLecturer(cb) {
