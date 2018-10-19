@@ -29,18 +29,14 @@ class Lecturer extends Component {
     });
   }
 
-  listQuestions() {
-    var i;
-    var askedQuestions= new Array();
-    for(i in this.state.questionMap)
-    {
-      askedQuestions.push(<div>{i}: {this.state.questionMap[i]}</div>)
-    }
-    return askedQuestions
-  }
-
 
   render() {
+    var questions = new Array();
+    this.state.questionMap.keys().forEach(
+           function(key) {
+             questions.push(<div>{key}: {this.state.questionMap.get(key)}</div>);
+           }, this)
+
     return (
        <div>
          <p>Lecturer</p>
@@ -49,6 +45,8 @@ class Lecturer extends Component {
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p>
+         <div>{questions}</div>
+
        </div>
     );
   }
