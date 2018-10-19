@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { connectLecturer, onQuestionReceived } from './api';
+import { connectLecturer, onQuestionReceived, onClearAll } from './api';
 const HashMap = require('hashmap');
 
 class Lecturer extends Component {
@@ -27,14 +27,14 @@ class Lecturer extends Component {
         questionMap: map
       })
     });
-  }
 
-  onClearAll() =>{
-        let map = new HashMap();
-        this.setState({
-          questionMap: map
-      })
-  });
+    onClearAll(() => {
+          let map = new HashMap();
+          this.setState({
+            questionMap: map
+          });
+    });
+  }
 
   render() {
     var questions = new Array();

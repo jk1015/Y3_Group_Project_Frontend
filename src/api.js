@@ -23,4 +23,4 @@ function clearAll() {
     socket.emit('clear all');
 }
 
-export { askQuestion, onQuestionReceived, connectLecturer }
+export { askQuestion, onQuestionReceived, connectLecturer, onClearAll }

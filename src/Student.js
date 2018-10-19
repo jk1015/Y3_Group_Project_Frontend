@@ -48,27 +48,25 @@ function Header() {
 }
 
 function makeQuestion(question) {
-  return <div class="question">
-           <p>{question}</p>
-         </div>;
+  return '<div class="question">' +
+           '<p>' + question + '</p>' +
+         '</div>';
 }
 
 function Questions(props) {
   let i;
   let questions = props.value;
-  let res = <p>No questions received! {questions[questions-1]}</p>;
-  if (questions.length > 0) {
-    res = <p>{questions[questions.length-1]}</p>
-  }
-  console.log("Haya Q");
-
+  let res = "<div id='questions'>";
+  // if (questions.length > 0) {
+  //   res = <div class="question"><p>{questions[questions.length-1]}</p></div>
+  // }
   for (i = 0; i < questions.length; i++) {
-//    questions.push(makeQuestion());
-//    res = <p>res{questions.get(i)}</p>
+    res = res + makeQuestion(questions[i]);
   }
-
+  res = res + '</div>'
+  let jsx_res = htmlToReactParser.parse(res);
   return (
-    res
+    jsx_res
   );
 }
 
@@ -89,8 +87,15 @@ class Student extends Component {
     onQuestionReceived((err, questionTally) => {
       let questions = this.state.questions;
       questions.push(questionTally.question);
-      this.setState({data: this.state.data + questions.length,
+      this.setState({data: this.state.data,
         questions: questions});
+    });
+
+    onClearAll(() => {
+          this.setState({
+            data: this.state.data,
+            questions: []
+          });
     });
   }
 
@@ -118,7 +123,7 @@ class Student extends Component {
           </form>
           <button onClick={this.ask}>ASK</button>
         </div>
-        <Questions value={this.state.questions} />
+        <Questions value={this.state.questions}/>
       </div>
     );
   }

@@ -61,3 +61,26 @@ code {
   border-top: none;
   margin-bottom: 10px;
 }
+
+.question {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 450px;
+  height: 30px;
+  background-color: #36365c;
+  color: white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: block;
+}
+
+.question p {
+  margin-top: 5px;
+  display: inline-block;
+}
+
+.question:hover {
+  background-color: #5050e0;
+}
