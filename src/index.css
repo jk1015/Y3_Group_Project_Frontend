@@ -13,13 +13,6 @@ code {
     monospace;
 }
 
-<<<<<<< HEAD
-.DontUnderstarndText{
-
-  font-size: 30px;
-  color: #900;
-
-=======
 #header {
   background-color: #242323;
   width: 100%;
@@ -67,5 +60,4 @@ code {
   border-right: none;
   border-top: none;
   margin-bottom: 10px;
->>>>>>> 03d6685a39721703bd71c84493bc69cbe497bae1
 }
