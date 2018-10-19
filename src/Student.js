@@ -89,8 +89,7 @@ class Student extends Component {
     onQuestionReceived((err, questionTally) => {
       let questions = this.state.questions;
       questions.push(questionTally.question);
-      this.setState({data: '',
-        questions: questions});
+      this.setState({questions: questions});
     });
   }
 
