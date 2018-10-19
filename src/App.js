@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Student from './Student';
 import Lecturer from './Lecturer';
-import selectIdentity from './selectIdentity';
+import SelectIdentity from './SelectIdentity';
 
 class App extends Component {
 
@@ -17,7 +17,7 @@ class App extends Component {
           <div className="App">
 
           <Route exact path='/'
-                render={() => <selectIdentity/>}
+                render={() => <SelectIdentity/>}
               />
 
           <Route exact path='/student'

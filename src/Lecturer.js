@@ -29,6 +29,12 @@ class Lecturer extends Component {
     });
   }
 
+  onClearAll() =>{
+        let map = new HashMap();
+        this.setState({
+          questionMap: map
+      })
+  });
 
   render() {
     var questions = new Array();

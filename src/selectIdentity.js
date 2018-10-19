@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class selectIdentity extends Component {
+class SelectIdentity extends Component {
 
   constructor(props) {
     super(props);
@@ -10,13 +10,12 @@ class selectIdentity extends Component {
     {
       return(
         <div>
-          <p>asdfasdfsadf</p>
-        <button>student</button>
-        <button>lecturer</button>
+        <p>I am a <a href="/Student">Student</a></p>
+        <p>I am a <a href="/Lecturer">Lecturer</a></p>
         </div>
       );
     }
 
 }
 
-export default selectIdentity;
+export default SelectIdentity;
