@@ -49,6 +49,9 @@ listQuestion()
          <p>Lecturer</p>
            <tr></tr>
          <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
+         <p className="DontUnderstandText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
+         <p className="DontUnderstandText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
+         <p className="DontUnderstandText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p>
          <p></p>
        </div>
     );
