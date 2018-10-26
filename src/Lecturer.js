@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 
-import { onClearAll, clearAll, connectLecturer, onQuestionReceived } from './api';
+import {
+    onClearAll,
+    clearAll,
+    connectLecturer,
+    onQuestionReceived,
+    onQuestionAnswered,
+    answerQuestion
+} from './api';
 const HashMap = require('hashmap');
 
 class Lecturer extends Component {
@@ -12,27 +19,36 @@ class Lecturer extends Component {
         questionMap: new HashMap()
     }
 
-    connectLecturer((err, questionMap) =>{
+    connectLecturer('TEMP', questionMap =>{
       let map = new HashMap();
       map.copy(questionMap)
       this.setState({
-        questionMap: map
+          questionMap: map
       })
     });
 
-    onQuestionReceived((err, questionTally) => {
-      let map = this.state.questionMap;
-      map.set(questionTally.question, questionTally.number);
-      this.setState({
-        questionMap: map
-      })
+    onQuestionReceived(questionTally => {
+        let map = this.state.questionMap;
+        map.set(questionTally.question, questionTally.number);
+        console.log("Question received:" + questionTally.question);
+        this.setState({
+            questionMap: map
+        })
+    });
+
+    onQuestionAnswered(question => {
+        let map = this.state.questionMap;
+        map.delete(question);
+        this.setState({
+            questionMap: map
+        })
     });
 
     onClearAll(() => {
-          let map = new HashMap();
-          this.setState({
-            questionMap: map
-          });
+        let map = new HashMap();
+        this.setState({
+        questionMap: map
+        });
     });
   }
 
@@ -40,7 +56,10 @@ class Lecturer extends Component {
     var questions = new Array();
     this.state.questionMap.keys().forEach(
            function(key) {
-             questions.push(<div>{key}: {this.state.questionMap.get(key)}</div>);
+             questions.push(<div>
+                 {key}: {this.state.questionMap.get(key)}
+                 <button onClick={()=>answerQuestion(key)}>Answer</button>
+             </div>);
            }, this)
 
     return (

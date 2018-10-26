@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { askQuestion, onClearAll } from './api';
+import { joinRoom, askQuestion, onClearAll, onQuestionAnswered} from './api';
 import { onQuestionReceived } from './api';
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
@@ -84,11 +84,12 @@ class Student extends Component {
     this.ask = this.ask.bind(this);
     console.log("Haya Q");
 
-    onQuestionReceived((err, questionTally) => {
+    onQuestionReceived(questionTally => {
       let questions = this.state.questions;
-      questions.push(questionTally.question);
-      this.setState({data: this.state.data,
-        questions: questions});
+      if (questions.indexOf(questionTally.question) < 0) {
+          questions.push(questionTally.question);
+          this.setState({data: this.state.data, questions: questions});
+      }
     });
 
     onClearAll(() => {
@@ -97,10 +98,16 @@ class Student extends Component {
             questions: []
           });
     });
+
+    onQuestionAnswered(question => {
+        let questions = this.state.questions;
+        questions.splice(questions.indexOf(question), 1);
+        this.setState({data: this.state.data, questions: questions});
+    })
   }
 
   componentDidMount(){
-//    askQuestion("I don't understand");
+      joinRoom("TEMP");
   }
 
   ask(){
