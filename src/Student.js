@@ -47,27 +47,17 @@ function Header() {
   );
 }
 
-function makeQuestion(question) {
-  return '<div class="question">' +
-           '<p>' + question + '</p>' +
-         '</div>';
-}
-
 function Questions(props) {
-  let i;
   let questions = props.value;
-  let res = "<div id='questions'>";
-  // if (questions.length > 0) {
-  //   res = <div class="question"><p>{questions[questions.length-1]}</p></div>
-  // }
-  for (i = 0; i < questions.length; i++) {
-    res = res + makeQuestion(questions[i]);
-  }
-  res = res + '</div>'
-  let jsx_res = htmlToReactParser.parse(res);
-  return (
-    jsx_res
+  let ret = questions.map((question) =>
+    //<li>{question}<button onClick={()=>askQuestion(question)}>ASK</button></li>
+    <div class="question">
+      <p>{question}</p>
+      <button onClick={()=>askQuestion(question)}>ASK</button>
+    </div>
   );
+  //let ret = <li>{questions}</li>
+  return ret;
 }
 
 var jsx_page = htmlToReactParser.parse(html_page);
@@ -146,7 +136,7 @@ class Student extends Component {
           <h2>Could you speed up?</h2>
           <button onClick={()=>askQuestion("Could you speed up?")}>ASK</button>
         </div>
-        <Questions value={this.state.questions} />
+        <Questions value={this.state.questions}/>
       </div>
     );
   }
