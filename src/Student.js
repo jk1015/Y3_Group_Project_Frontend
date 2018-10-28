@@ -50,13 +50,11 @@ function Header() {
 function Questions(props) {
   let questions = props.value;
   let ret = questions.map((question) =>
-    //<li>{question}<button onClick={()=>askQuestion(question)}>ASK</button></li>
     <div class="question">
       <p>{question}</p>
       <button onClick={()=>askQuestion(question)}>ASK</button>
     </div>
   );
-  //let ret = <li>{questions}</li>
   return ret;
 }
 
