@@ -53,15 +53,22 @@ class Lecturer extends Component {
   }
 
   render() {
-    var questions = new Array();
+    var questions = [];
     this.state.questionMap.keys().forEach(
-           function(key) {
-             questions.push(<div>
-                 {key}: {this.state.questionMap.get(key)}
-                 <button onClick={()=>answerQuestion(key)}>Answer</button>
-             </div>);
-           }, this)
-
+      function(key) {
+        questions.push([key, this.state.questionMap.get(key)]);
+      }, this)
+    questions.sort(
+      function(a, b) {
+        return b[1] - a[1];
+      }
+    )
+    var questionList = questions.map((question) =>
+      <div>
+        {question[0]}: {question[1]}
+        <button onClick={()=>answerQuestion(question[0])}>Answer</button>
+      </div>
+    );
     return (
        <div>
          <p>Lecturer</p>
@@ -73,7 +80,7 @@ class Lecturer extends Component {
          <div id="Clear">
            <button onClick={()=>clearAll()}>CLEAR ALL!</button>
          </div>
-         <div>{questions}</div>
+         <div>{questionList}</div>
 
        </div>
     );
