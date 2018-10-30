@@ -30,7 +30,7 @@ class Lecturer extends Component {
 
     onQuestionReceived(questionTally => {
         let map = this.state.questionMap;
-        
+
         if(questionTally.number <= 0)
           map.delete(questionTally.question)
         else
@@ -82,6 +82,8 @@ class Lecturer extends Component {
          <p>Lecturer</p>
            <tr></tr>
          {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
+
+         <p className="DontUnderstandText">Number of students who don&#39;t understand: {this.state.questionMap.get("I don't understand")}</p>
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}

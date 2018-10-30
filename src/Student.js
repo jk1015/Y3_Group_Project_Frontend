@@ -197,10 +197,10 @@ class Student extends Component {
             let faq_button = document.getElementById("faq_button");
             if (faq_questions.style.display === "none") {
               faq_questions.style.display = "block";
-              faq_button.innerHTML = "hide FAQ";
+              faq_button.innerHTML = "hide FAQ &#9652;";
             } else {
               faq_questions.style.display = "none";
-              faq_button.innerHTML = "show FAQ";
+              faq_button.innerHTML = "show FAQ &#9662;";
             }
           }}>show FAQ</p>
           <div id="faq_questions">
