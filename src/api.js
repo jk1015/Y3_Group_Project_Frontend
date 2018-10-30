@@ -1,4 +1,5 @@
 import openSocket from 'socket.io-client';
+import React, { Component } from 'react';
 
 //change to heroku for deployment
 const socket = openSocket('group26-backend.herokuapp.com');
@@ -41,6 +42,35 @@ function stopAsking(question) {
   socket.emit('stop asking', question);
 }
 
+function Header(props) {
+  let title = props.value;
+  let className1 = "nav_item";
+  let className2 = "nav_item";
+  switch (title) {
+    case "Student":
+      className2 = className2 + "_active";
+      break;
+    case "Lecturer":
+      className1 = className1 + "_active";
+      break;
+  }
+  return (
+    <div>
+      <div id="header">
+        <p>{title}</p>
+      </div>
+      <nav id="header_nav">
+        <a class={className1} href="/lecturer">
+          <p>Lecturer</p>
+        </a>
+        <a class={className2} href="/student">
+          <p>Student</p>
+        </a>
+      </nav>
+    </div>
+  );
+}
+
 export {
     joinRoom,
     onClearAll,
@@ -50,5 +80,6 @@ export {
     connectLecturer,
     answerQuestion,
     onQuestionAnswered,
-    stopAsking
+    stopAsking,
+    Header
 }

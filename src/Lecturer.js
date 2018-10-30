@@ -7,8 +7,10 @@ import {
     onQuestionReceived,
     onQuestionAnswered,
     answerQuestion,
-    joinRoom
+    joinRoom,
+    Header
 } from './api';
+
 const HashMap = require('hashmap');
 
 class Lecturer extends Component {
@@ -72,13 +74,14 @@ class Lecturer extends Component {
     )
 
     var questionList = questions.map((question) =>
-      <div key={question[0]}>
-        {question[0]}: {question[1]}
-        <button onClick={()=>answerQuestion(question[0])}>Answer</button>
+      <div class="question" key={question[0]}>
+        <p>{question[0]}</p>: <p>{question[1]}</p>
+        <button class="button_info" onClick={()=>answerQuestion(question[0])}>Answer</button>
       </div>
     );
     return (
        <div>
+         <Header value="Lecturer"/>
          <p>Lecturer</p>
            <tr></tr>
          {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>

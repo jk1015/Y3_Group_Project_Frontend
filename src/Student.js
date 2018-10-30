@@ -5,7 +5,8 @@ import { askQuestion,
   connectLecturer,
   onQuestionAnswered,
   stopAsking,
-  onQuestionReceived} from './api';
+  onQuestionReceived,
+  Header} from './api';
 
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
@@ -45,14 +46,6 @@ var header =
 // function printMsg(q) {
 //   console.log(q);
 // }
-
-function Header() {
-  return (
-    <div id="header">
-      <p>Student Room</p>
-    </div>
-  );
-}
 
 function makeQuestion(question) {
   return '<div class="question">' +
@@ -171,11 +164,11 @@ class Student extends Component {
     )
 
     var questionList = questions.map((question) =>
-      <div key={question[0]}>
+      <div class="question" key={question[0]}>
         {question[0]}: {question[1]}
         {!this.state.myQuestions.includes(question[0])?
-          <button onClick={()=>this.ask(question[0])}>Ask</button>:
-          <button onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
+          <button class="button_info" onClick={()=>this.ask(question[0])}>Ask</button>:
+          <button class="button_info" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
         }
       </div>
     );
@@ -183,7 +176,7 @@ class Student extends Component {
 
     return (
       <div>
-        <Header />
+        <Header value="Student"/>
         <div id="Question_box">
           <h2>ASK A QUESTION</h2>
           <form id="Question_form">
@@ -202,7 +195,7 @@ class Student extends Component {
               faq_questions.style.display = "none";
               faq_button.innerHTML = "show FAQ &#9662;";
             }
-          }}>show FAQ</p>
+          }}>show FAQ &#9662;</p>
           <div id="faq_questions">
             <p onClick={()=>askQuestion("I don't understand")}>
               I DON&#39;T UNDERSTAND
