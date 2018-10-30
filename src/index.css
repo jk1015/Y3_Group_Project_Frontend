@@ -107,6 +107,7 @@ code {
   color: white;
   padding: 5px;
   margin: 5px;
+  display: inline-block;
 }
 
 #Question_box button:hover {
@@ -125,13 +126,15 @@ code {
   margin-bottom: 5px;
   margin-right: auto;
   margin-left: auto;
-  width: 450px;
+  min-width: 450px;
   height: 40px;
   background-color: #36365c;
   color: white;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  display: block;
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .question p {
@@ -141,4 +144,10 @@ code {
 
 .question:hover {
   background-color: #5050e0;
+}
+
+.question_link {
+  color: white;
+  text-decoration: none;
+  display: inline-block;
 }

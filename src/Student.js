@@ -6,7 +6,8 @@ import { askQuestion,
   onQuestionAnswered,
   stopAsking,
   onQuestionReceived,
-  Header} from './api';
+  Header,
+} from './api';
 
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
@@ -68,8 +69,6 @@ function Questions(props) {
   // return (
   //   jsx_res
   // );
-
-
 }
 
 var jsx_page = htmlToReactParser.parse(html_page);
@@ -83,18 +82,20 @@ class Student extends Component {
     this.state = {
        data: '',
        questionMap: new HashMap(),
-       myQuestions: []
+       myQuestions: [],
+       room: this.props.value
     }
 
     this.updateQuestionField = this.updateQuestionField.bind(this);
     this.ask = this.ask.bind(this);
     this.removeAsk = this.removeAsk.bind(this);
 
-    connectLecturer('TEMP', questionMap =>{
+    connectLecturer(this.state.room, questionMap =>{
       let map = new HashMap();
       map.copy(questionMap)
       this.setState({
-          questionMap: map
+          questionMap: map,
+          room: props.value
       })
     });
 
@@ -107,13 +108,15 @@ class Student extends Component {
         map.set(questionTally.question, questionTally.number);
 
       this.setState({
-          questionMap: map
+          questionMap: map,
+          room: this.state.room
       })
     });
 
     onClearAll(() => {
       this.setState({
-        questionMap: new HashMap()
+        questionMap: new HashMap(),
+        room: this.state.room
       });
     });
 
@@ -124,13 +127,14 @@ class Student extends Component {
       }
 
       this.setState({
-        questionMap: questionMap
+        questionMap: questionMap,
+        room: this.state.room
       });
     });
   }
 
   ask(){
-    askQuestion(this.state.data);
+    askQuestion(this.state.data, this.state.room);
     this.setState({data: ''});
 
     let newMyQ = this.state.myQuestions.map(d=>({...d}));
@@ -143,7 +147,7 @@ class Student extends Component {
   }
 
   removeAsk(question){
-    stopAsking(question);
+    stopAsking(question, this.state.room);
     let newMyQ = this.state.myQuestions.map(d=>({...d}));
     newMyQ = newMyQ.filter((q) => q !== question)
     this.setState({myQuestions: newMyQ});
@@ -176,7 +180,7 @@ class Student extends Component {
 
     return (
       <div>
-        <Header value="Student"/>
+        <Header value={"Student Page\nRoom: " + this.state.room}/>
         <div id="Question_box">
           <h2>ASK A QUESTION</h2>
           <form id="Question_form">
@@ -197,16 +201,16 @@ class Student extends Component {
             }
           }}>show FAQ &#9662;</p>
           <div id="faq_questions">
-            <p onClick={()=>askQuestion("I don't understand")}>
+            <p onClick={()=>askQuestion("I don't understand", this.state.room)}>
               I DON&#39;T UNDERSTAND
             </p>
-            <p onClick={()=>askQuestion("Could you give an example?")}>
+            <p onClick={()=>askQuestion("Could you give an example?", this.state.room)}>
               Could you give an example?
             </p>
-            <p onClick={()=>askQuestion("Could you slow down?")}>
+            <p onClick={()=>askQuestion("Could you slow down?", this.state.room)}>
               Could you slow down?
             </p>
-            <p onClick={()=>askQuestion("Could you speed up?")}>
+            <p onClick={()=>askQuestion("Could you speed up?", this.state.room)}>
               Could you speed up?
             </p>
           </div>

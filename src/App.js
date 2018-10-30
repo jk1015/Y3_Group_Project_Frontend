@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Student from './Student';
 import Lecturer from './Lecturer';
 import SelectIdentity from './selectIdentity';
+import Room from './Room';
 
 class App extends Component {
 
@@ -20,12 +21,16 @@ class App extends Component {
                 render={() => <SelectIdentity/>}
               />
 
-          <Route exact path='/student'
-                render={() => <Student/>}
+          <Route exact path='/room'
+                render={() => <Room/>}
               />
 
-          <Route exact path='/lecturer'
-                render={() => <Lecturer/>}
+          <Route exact path='/student/:room'
+                render={({match}) => <Student value={match.params.room}/>}
+              />
+
+          <Route exact path='/lecturer/:room'
+                render={({match}) => <Lecturer value={match.params.room}/>}
               />
           </div>
       </Router>

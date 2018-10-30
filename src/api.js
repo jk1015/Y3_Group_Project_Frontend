@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 
 //change to heroku for deployment
 const socket = openSocket('group26-backend.herokuapp.com');
-// const socket = openSocket('http://localhost:8080');
+//const socket = openSocket('http://localhost:8080');
 
 function joinRoom(room) {
     socket.emit("join room", room);
 }
-function askQuestion(question) {
-    socket.emit('question asked', question)
+function askQuestion(question, room) {
+    socket.emit('question asked', question, room)
 }
 
 function onQuestionReceived(cb) {
@@ -19,27 +19,35 @@ function onQuestionReceived(cb) {
 function connectLecturer(room, cb) {
     joinRoom(room);
     socket.on('on lecturer connect', questionMap => cb(questionMap));
-    socket.emit('lecturer connect');
+    socket.emit('lecturer connect', room);
 }
 
 function onClearAll(cb) {
     socket.on('on clear all', () => cb());
 }
 
-function clearAll() {
-    socket.emit('clear all');
+function clearAll(room) {
+    socket.emit('clear all', room);
 }
 
-function answerQuestion(question) {
-    socket.emit('answer question', question);
+function answerQuestion(question, room) {
+    socket.emit('answer question', question, room);
 }
 
 function onQuestionAnswered(cb) {
     socket.on('question answered', question => cb(question));
 }
 
-function stopAsking(question) {
-  socket.emit('stop asking', question);
+function onRoomsRecieved(cb) {
+    socket.on('on rooms lists', lists => cb(lists));
+}
+
+function connectRoom() {
+  socket.emit('get rooms lists');
+}
+
+function stopAsking(question, room) {
+  socket.emit('stop asking', question, room);
 }
 
 function Header(props) {
@@ -47,10 +55,10 @@ function Header(props) {
   let className1 = "nav_item";
   let className2 = "nav_item";
   switch (title) {
-    case "Student":
+    case "Room":
       className2 = className2 + "_active";
       break;
-    case "Lecturer":
+    case "Welcome":
       className1 = className1 + "_active";
       break;
   }
@@ -60,11 +68,11 @@ function Header(props) {
         <p>{title}</p>
       </div>
       <nav id="header_nav">
-        <a class={className1} href="/lecturer">
-          <p>Lecturer</p>
+        <a class={className1} href="/">
+          <p>Home</p>
         </a>
-        <a class={className2} href="/student">
-          <p>Student</p>
+        <a class={className2} href="/room">
+          <p>Rooms</p>
         </a>
       </nav>
     </div>
@@ -81,5 +89,7 @@ export {
     answerQuestion,
     onQuestionAnswered,
     stopAsking,
-    Header
+    Header,
+    onRoomsRecieved,
+    connectRoom
 }

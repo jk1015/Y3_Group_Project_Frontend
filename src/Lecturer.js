@@ -19,14 +19,16 @@ class Lecturer extends Component {
     super(props);
 
     this.state ={
-        questionMap: new HashMap()
+        questionMap: new HashMap(),
+        room: props.value
     }
 
-    connectLecturer('TEMP', questionMap =>{
+    connectLecturer(this.state.room, questionMap =>{
       let map = new HashMap();
       map.copy(questionMap)
       this.setState({
-          questionMap: map
+          questionMap: map,
+          room: this.state.room
       })
     });
 
@@ -39,7 +41,8 @@ class Lecturer extends Component {
           map.set(questionTally.question, questionTally.number);
 
         this.setState({
-            questionMap: map
+            questionMap: map,
+            room: this.state.room
         })
     });
 
@@ -47,14 +50,16 @@ class Lecturer extends Component {
         let map = this.state.questionMap;
         map.delete(question);
         this.setState({
-            questionMap: map
+            questionMap: map,
+            room: this.state.room
         })
     });
 
     onClearAll(() => {
         let map = new HashMap();
         this.setState({
-        questionMap: map
+        questionMap: map,
+        room: this.state.room
         });
     });
   }
@@ -81,7 +86,7 @@ class Lecturer extends Component {
     );
     return (
        <div>
-         <Header value="Lecturer"/>
+         <Header value={"Lecturer\nRoom: " + this.state.room}/>
          <p>Lecturer</p>
            <tr></tr>
          {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
@@ -93,7 +98,7 @@ class Lecturer extends Component {
          <div>{questionList}</div>
 
          <div id="Clear">
-           <button className="button_info" onClick={()=>clearAll()}>CLEAR ALL!</button>
+           <button className="button_info" onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
          </div>
        </div>
     );
