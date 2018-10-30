@@ -1,9 +1,8 @@
 import openSocket from 'socket.io-client';
-import React, { Component } from 'react';
 
 //change to heroku for deployment
 const socket = openSocket('group26-backend.herokuapp.com');
-//const socket = openSocket('http://localhost:8080');
+// const socket = openSocket('http://localhost:8080');
 
 function joinRoom(room) {
     socket.emit("join room", room);
@@ -38,6 +37,10 @@ function onQuestionAnswered(cb) {
     socket.on('question answered', question => cb(question));
 }
 
+function stopAsking(question) {
+  socket.emit('stop asking', question);
+}
+
 export {
     joinRoom,
     onClearAll,
@@ -46,5 +49,6 @@ export {
     onQuestionReceived,
     connectLecturer,
     answerQuestion,
-    onQuestionAnswered
+    onQuestionAnswered,
+    stopAsking
 }
