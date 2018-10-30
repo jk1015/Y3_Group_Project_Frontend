@@ -31,8 +31,9 @@ code {
 
 #Question_box {
   margin-top: 100px;
+  margin-bottom: 100px;
   width: 400px;
-  height: 250px;
+  min-height: 250px;
   border: 10px solid pink;
   background-color: #e6526c;
   margin-left: auto;
@@ -41,6 +42,19 @@ code {
   text-align: center;
   color: white;
   font-size: 1.5em;
+}
+
+#faq_questions {
+  font-size: 0.7em;
+  display: none;
+}
+
+#faq_button {
+  font-size: 0.5em;
+  width: 100px;
+  display: block;
+  float: right;
+  margin: 0;
 }
 
 #Question_box button {
@@ -56,7 +70,7 @@ code {
   border-radius: 5px;
   border: 1px solid white;
   color: white;
-  padding: 5px;  
+  padding: 5px;
 }
 
 #Question_box button:hover {

@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 
-<<<<<<< HEAD
-import { askQuestion, onClearAll } from './api';
-import { onQuestionReceived, Header } from './api';
-=======
 import { joinRoom, askQuestion, onClearAll, onQuestionAnswered} from './api';
 import { onQuestionReceived } from './api';
->>>>>>> 42fec3a16a22a98f2d94fa8645c71c38e580c467
+
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
 var htmlToReactParser = new HtmlToReactParser();
@@ -122,22 +118,35 @@ class Student extends Component {
               onChange={this.updateQuestionField}/>
           </form>
           <button onClick={this.ask}>ASK</button>
-        </div>
-        <div id="Understand">
-          <h2>I DON'T UNDERSTAND</h2>
-          <button onClick={()=>askQuestion("I don't understand")}>ASK</button>
-        </div>
-        <div id="Example">
-          <h2>Could you give an example?</h2>
-          <button onClick={()=>askQuestion("Could you give an example?")}>ASK</button>
-        </div>
-        <div id="Slower">
-          <h2>Could you slow down?</h2>
-          <button onClick={()=>askQuestion("Could you slow down?")}>ASK</button>
-        </div>
-        <div id="Faster">
-          <h2>Could you speed up?</h2>
-          <button onClick={()=>askQuestion("Could you speed up?")}>ASK</button>
+          <br/>
+          <p id="faq_button" onClick={() => {
+            let faq_button = document.getElementById('faq_button');
+            let faq_questions = document.getElementById('faq_questions');
+            if (faq_questions.style.display === "none") {
+              faq_questions.style.display = "block";
+              faq_button.innerHTML = "hide FAQ";
+            } else {
+              faq_questions.style.display = "none";
+              faq_button.innerHTML = "show FAQ";
+            }
+          }}>show FAQ</p>
+          <div id="faq_questions">
+            <p onClick={()=>askQuestion("I don't understand")}>
+              I DON&#39;T UNDERSTAND
+            </p>
+            <p onClick={()=>askQuestion("Could you give an example?")}>
+              Could you give an example?
+            </p>
+            <p onClick={()=>askQuestion("Could you slow down?")}>
+              Could you slow down?
+            </p>
+            <p onClick={()=>askQuestion("Could you speed up?")}>
+              Could you speed up?
+            </p>
+            <p onClick={()=>askQuestion("Could you speed up?")}>
+              Could you speed up?
+            </p>
+          </div>
         </div>
         <Questions value={this.state.questions}/>
       </div>

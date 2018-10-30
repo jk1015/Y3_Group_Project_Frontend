@@ -71,7 +71,6 @@ class Lecturer extends Component {
     );
     return (
        <div>
-         <Header value="Lecturer"/>
          <p>Lecturer</p>
            <tr></tr>
          <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
