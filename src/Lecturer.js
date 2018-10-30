@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 
-import { onClearAll, clearAll, connectLecturer, onQuestionReceived, Header } from './api';
+import {
+    onClearAll,
+    clearAll,
+    connectLecturer,
+    onQuestionReceived,
+    onQuestionAnswered,
+    answerQuestion
+} from './api';
 const HashMap = require('hashmap');
 
 class Lecturer extends Component {
@@ -12,37 +19,56 @@ class Lecturer extends Component {
         questionMap: new HashMap()
     }
 
-    connectLecturer((err, questionMap) =>{
+    connectLecturer('TEMP', questionMap =>{
       let map = new HashMap();
       map.copy(questionMap)
       this.setState({
-        questionMap: map
+          questionMap: map
       })
     });
 
-    onQuestionReceived((err, questionTally) => {
-      let map = this.state.questionMap;
-      map.set(questionTally.question, questionTally.number);
-      this.setState({
-        questionMap: map
-      })
+    onQuestionReceived(questionTally => {
+        let map = this.state.questionMap;
+        map.set(questionTally.question, questionTally.number);
+        console.log("Question received:" + questionTally.question);
+        this.setState({
+            questionMap: map
+        })
+    });
+
+    onQuestionAnswered(question => {
+        let map = this.state.questionMap;
+        map.delete(question);
+        this.setState({
+            questionMap: map
+        })
     });
 
     onClearAll(() => {
-          let map = new HashMap();
-          this.setState({
-            questionMap: map
-          });
+        let map = new HashMap();
+        this.setState({
+        questionMap: map
+        });
     });
   }
 
   render() {
-    var questions = new Array();
+    var questions = [];
     this.state.questionMap.keys().forEach(
-           function(key) {
-             questions.push(<div>{key}: {this.state.questionMap.get(key)}</div>);
-           }, this)
-
+      function(key) {
+        questions.push([key, this.state.questionMap.get(key)]);
+      }, this)
+    questions.sort(
+      function(a, b) {
+        return b[1] - a[1];
+      }
+    )
+    var questionList = questions.map((question) =>
+      <div>
+        {question[0]}: {question[1]}
+        <button onClick={()=>answerQuestion(question[0])}>Answer</button>
+      </div>
+    );
     return (
        <div>
          <Header value="Lecturer"/>
@@ -55,7 +81,7 @@ class Lecturer extends Component {
          <div id="Clear">
            <button className="button_info" onClick={()=>clearAll()}>CLEAR ALL!</button>
          </div>
-         <div>{questions}</div>
+         <div>{questionList}</div>
 
        </div>
     );

@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 
+<<<<<<< HEAD
 import { askQuestion, onClearAll } from './api';
 import { onQuestionReceived, Header } from './api';
+=======
+import { joinRoom, askQuestion, onClearAll, onQuestionAnswered} from './api';
+import { onQuestionReceived } from './api';
+>>>>>>> 42fec3a16a22a98f2d94fa8645c71c38e580c467
 //var student_page = require('./student.html.js');
 var HtmlToReactParser = require('html-to-react').Parser;
 var htmlToReactParser = new HtmlToReactParser();
@@ -39,27 +44,23 @@ var header =
 //   console.log(q);
 // }
 
-function makeQuestion(question) {
-  return '<div class="question">' +
-           '<p>' + question + '</p>' +
-         '</div>';
+function Header() {
+  return (
+    <div id="header">
+      <p>Student Room</p>
+    </div>
+  );
 }
 
 function Questions(props) {
-  let i;
   let questions = props.value;
-  let res = "<div id='questions'>";
-  // if (questions.length > 0) {
-  //   res = <div class="question"><p>{questions[questions.length-1]}</p></div>
-  // }
-  for (i = 0; i < questions.length; i++) {
-    res = res + makeQuestion(questions[i]);
-  }
-  res = res + '</div>'
-  let jsx_res = htmlToReactParser.parse(res);
-  return (
-    jsx_res
+  let ret = questions.map((question) =>
+    <div class="question">
+      <p>{question}</p>
+      <button onClick={()=>askQuestion(question)}>ASK</button>
+    </div>
   );
+  return ret;
 }
 
 var jsx_page = htmlToReactParser.parse(html_page);
@@ -76,11 +77,12 @@ class Student extends Component {
     this.ask = this.ask.bind(this);
     console.log("Haya Q");
 
-    onQuestionReceived((err, questionTally) => {
+    onQuestionReceived(questionTally => {
       let questions = this.state.questions;
-      questions.push(questionTally.question);
-      this.setState({data: this.state.data,
-        questions: questions});
+      if (questions.indexOf(questionTally.question) < 0) {
+          questions.push(questionTally.question);
+          this.setState({data: this.state.data, questions: questions});
+      }
     });
 
     onClearAll(() => {
@@ -89,10 +91,16 @@ class Student extends Component {
             questions: []
           });
     });
+
+    onQuestionAnswered(question => {
+        let questions = this.state.questions;
+        questions.splice(questions.indexOf(question), 1);
+        this.setState({data: this.state.data, questions: questions});
+    })
   }
 
   componentDidMount(){
-//    askQuestion("I don't understand");
+      joinRoom("TEMP");
   }
 
   ask(){
@@ -131,7 +139,7 @@ class Student extends Component {
           <h2>Could you speed up?</h2>
           <button onClick={()=>askQuestion("Could you speed up?")}>ASK</button>
         </div>
-        <Questions value={this.state.questions} />
+        <Questions value={this.state.questions}/>
       </div>
     );
   }
