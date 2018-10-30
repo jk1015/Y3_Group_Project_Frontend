@@ -10,8 +10,8 @@ class SelectIdentity extends Component {
     {
       return(
         <div>
-        <p>I am a <a href="/Student">Student</a></p>
-        <p>I am a <a href="/Lecturer">Lecturer</a></p>
+          <p>I am a <a href="/Student">Student</a></p>
+          <p>I am a <a href="/Lecturer">Lecturer</a></p>
         </div>
       );
     }

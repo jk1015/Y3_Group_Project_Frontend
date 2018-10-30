@@ -147,7 +147,6 @@ class Student extends Component {
             <p onClick={()=>askQuestion("Could you speed up?")}>
               Could you speed up?
             </p>
-
           </div>
         </div>
         <Questions value={this.state.questions} />
