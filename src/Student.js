@@ -126,7 +126,10 @@ class Student extends Component {
       if (questionMap.has(question)) {
          questionMap.delete(question);
       }
-
+      if (this.state.myQuestions.includes(question)) {
+        let i = this.state.myQuestions.indexOf(question);
+        this.state.myQuestions.splice(i, 1);
+      }
       this.setState({
         questionMap: questionMap,
         room: this.state.room
