@@ -80,9 +80,11 @@ class Lecturer extends Component {
     )
 
     var questionList = questions.map((question) =>
-      <div class="question" key={question[0]}>
-        <p>{question[0]}</p>: <p>{question[1]}</p>
-        <button class="button_info" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
+    <div class="row">
+      <div class="question col-9" key={question[0]}>
+        <p class="col-9">{question[0]}</p>: <p class="col-2">{question[1]}</p>
+      </div>
+      <button class="btn btn-warning col-2" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
     return (
@@ -96,10 +98,10 @@ class Lecturer extends Component {
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
-         <div>{questionList}</div>
+         <div class="container-fluid">{questionList}</div>
 
          <div id="Clear">
-           <button className="button_info" onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
+           <button className="button_info " onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
          </div>
          <Footer />
        </div>

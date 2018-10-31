@@ -145,18 +145,28 @@ code {
   margin-bottom: 10px;
 }
 
-.question {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: auto;
+.btn{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right:auto;
   margin-left: auto;
-  min-width: 450px;
+  height: 40px;
+}
+
+.question {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right:auto;
+  margin-left: auto;
+  min-width: 200px;
   height: 40px;
   background-color: #36365c;
   color: white;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  display: inline-block;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+
   padding-left: 10px;
   padding-right: 10px;
 }
