@@ -142,9 +142,10 @@ class Student extends Component {
 
   ask2(question){
     askQuestion(question, this.state.room);
-    let newMyQ = this.state.myQuestions.map(d=>({...d}));
-    newMyQ.push(question);
-    this.setState({myQuestions: newMyQ});
+    //let newMyQ = this.state.myQuestions.map(d=>({...d}));
+    //newMyQ.push(question);
+    this.state.myQuestions.push(question);
+    //this.setState({myQuestions: newMyQ});
   }
 
   updateQuestionField(e) {
@@ -153,9 +154,11 @@ class Student extends Component {
 
   removeAsk(question){
     stopAsking(question, this.state.room);
-    let newMyQ = this.state.myQuestions.map(d=>({...d}));
-    newMyQ = newMyQ.filter((q) => q !== question)
-    this.setState({myQuestions: newMyQ});
+    //let newMyQ = this.state.myQuestions.map(d=>({...d}));
+    //newMyQ = newMyQ.filter((q) => q !== question)
+    //this.setState({myQuestions: newMyQ});
+    let i = this.state.myQuestions.indexOf(question);
+    this.state.myQuestions.splice(i, 1);
   }
 
   render() {
