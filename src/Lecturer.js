@@ -82,7 +82,7 @@ class Lecturer extends Component {
     var questionList = questions.map((question) =>
       <div class="question" key={question[0]}>
         <p>{question[0]}</p>: <p>{question[1]}</p>
-        <button class="button_info" onClick={()=>answerQuestion(question[0])}>Answer</button>
+        <button class="button_info" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
     return (
