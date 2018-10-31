@@ -161,9 +161,9 @@ code {
 .question {
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-right:auto;
+
   margin-left: auto;
-  min-width: 200px;
+  min-width: 50px;
 
   background-color: #36365c;
   color: white;

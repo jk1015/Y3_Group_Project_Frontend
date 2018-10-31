@@ -182,11 +182,13 @@ class Student extends Component {
     )
 
     var questionList = questions.map((question) =>
-      <div class="question" key={question[0]}>
+    <div class="row longWord">
+      <div class="question col-9" key={question[0]}>
         {question[0]}: {question[1]}
+      </div>
         {!this.state.myQuestions.includes(question[0])?
-          <button class="button_info" onClick={()=>this.ask2(question[0])}>Ask</button>:
-          <button class="button_info" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
+          <button class="btn btn-success col-2" onClick={()=>this.ask2(question[0])}>Ask</button>:
+          <button class="btn btn-danger col-2" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
         }
       </div>
     );
