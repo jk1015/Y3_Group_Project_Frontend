@@ -135,11 +135,15 @@ class Student extends Component {
   }
 
   ask(){
-    askQuestion(this.state.data, this.state.room);
+    let question = this.state.data;
+    this.ask2(question)
     this.setState({data: ''});
+  }
 
+  ask2(question){
+    askQuestion(question, this.state.room);
     let newMyQ = this.state.myQuestions.map(d=>({...d}));
-    newMyQ.push(this.state.data);
+    newMyQ.push(question);
     this.setState({myQuestions: newMyQ});
   }
 
@@ -172,7 +176,7 @@ class Student extends Component {
       <div class="question" key={question[0]}>
         {question[0]}: {question[1]}
         {!this.state.myQuestions.includes(question[0])?
-          <button class="button_info" onClick={()=>this.ask(question[0])}>Ask</button>:
+          <button class="button_info" onClick={()=>this.ask2(question[0])}>Ask</button>:
           <button class="button_info" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
         }
       </div>
@@ -202,16 +206,16 @@ class Student extends Component {
             }
           }}>show FAQ &#9662;</p>
           <div id="faq_questions">
-            <p onClick={()=>askQuestion("I don't understand", this.state.room)}>
+            <p onClick={()=>this.ask2("I don't understand")}>
               I DON&#39;T UNDERSTAND
             </p>
-            <p onClick={()=>askQuestion("Could you give an example?", this.state.room)}>
+            <p onClick={()=>this.ask2("Could you give an example?")}>
               Could you give an example?
             </p>
-            <p onClick={()=>askQuestion("Could you slow down?", this.state.room)}>
+            <p onClick={()=>this.ask2("Could you slow down?")}>
               Could you slow down?
             </p>
-            <p onClick={()=>askQuestion("Could you speed up?", this.state.room)}>
+            <p onClick={()=>this.ask2("Could you speed up?")}>
               Could you speed up?
             </p>
           </div>
