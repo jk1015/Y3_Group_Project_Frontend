@@ -141,11 +141,13 @@ class Student extends Component {
   }
 
   ask2(question){
-    askQuestion(question, this.state.room);
-    //let newMyQ = this.state.myQuestions.map(d=>({...d}));
-    //newMyQ.push(question);
-    this.state.myQuestions.push(question);
-    //this.setState({myQuestions: newMyQ});
+    if (!this.state.myQuestions.includes(question)) {
+      askQuestion(question, this.state.room);
+      //let newMyQ = this.state.myQuestions.map(d=>({...d}));
+      //newMyQ.push(question);
+      this.state.myQuestions.push(question);
+      //this.setState({myQuestions: newMyQ});
+    }
   }
 
   updateQuestionField(e) {
@@ -159,6 +161,7 @@ class Student extends Component {
     //this.setState({myQuestions: newMyQ});
     let i = this.state.myQuestions.indexOf(question);
     this.state.myQuestions.splice(i, 1);
+    // TODO: duplicate array?
   }
 
   render() {
