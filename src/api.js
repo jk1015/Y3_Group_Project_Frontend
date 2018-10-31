@@ -65,6 +65,7 @@ function Header(props) {
   return (
     <div>
       <div id="header">
+        <img id="header_logo" src="/app_logo.png"/>
         <p>{title}</p>
       </div>
       <nav id="header_nav">
@@ -75,6 +76,25 @@ function Header(props) {
           <p>Rooms</p>
         </a>
       </nav>
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <div id="footer">
+      <div id="footer_nav">
+        <div>
+          <h2><strong>QuestHub</strong></h2>
+        </div>
+        <div class="footer_nav_item">
+          <a class="footer_nav_link" href="/">Home</a>
+        </div>
+        <div class="footer_nav_item">
+          <a class="footer_nav_link" href="/room">Room</a>
+        </div>
+      </div>
+      <img id="footer_logo" src="/app_logo.png"/>
     </div>
   );
 }
@@ -91,5 +111,6 @@ export {
     stopAsking,
     Header,
     onRoomsRecieved,
-    connectRoom
+    connectRoom,
+    Footer
 }

@@ -8,7 +8,8 @@ import {
     onQuestionAnswered,
     answerQuestion,
     joinRoom,
-    Header
+    Header,
+    Footer
 } from './api';
 
 const HashMap = require('hashmap');
@@ -100,6 +101,7 @@ class Lecturer extends Component {
          <div id="Clear">
            <button className="button_info" onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
          </div>
+         <Footer />
        </div>
     );
   }

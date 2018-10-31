@@ -7,6 +7,7 @@ import { askQuestion,
   stopAsking,
   onQuestionReceived,
   Header,
+  Footer
 } from './api';
 
 //var student_page = require('./student.html.js');
@@ -218,6 +219,7 @@ class Student extends Component {
 
         <div>{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
+        <Footer />
       </div>
     );
   }

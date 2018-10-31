@@ -9,7 +9,8 @@ import {
     joinRoom,
     Header,
     onRoomsRecieved,
-    connectRoom
+    connectRoom,
+    Footer
 } from './api';
 
 var HtmlToReactParser = require('html-to-react').Parser;
@@ -78,7 +79,7 @@ class Room extends Component {
   render() {
     return (
       <div>
-        <Header value="Rooms"/>
+        <Header value="Room"/>
         <div id="Question_box">
           <h2>CREATE NEW ROOM</h2>
           <form id="Question_form">
@@ -88,6 +89,7 @@ class Room extends Component {
           <button onClick={this.createRoom}>Create Room</button>
         </div>
         <Rooms value={this.state.rooms}/>
+        <Footer />
       </div>
     );
   }

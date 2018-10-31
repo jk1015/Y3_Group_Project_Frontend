@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Header
+  Header,
+  Footer
 } from './api';
 
 class SelectIdentity extends Component {
@@ -14,6 +15,16 @@ class SelectIdentity extends Component {
       return(
         <div>
           <Header value="Welcome"/>
+          <div class="welcome_page_text">
+            <p>Have questions in lectures</p>
+          </div>
+          <div id="welcome_page_text_img">
+            <p>While the lecturer is asking</p>
+          </div>
+          <div class="welcome_page_text">
+            <p>so just ask it using QuestHub</p>
+          </div>
+          <Footer />
         </div>
       );
     }
