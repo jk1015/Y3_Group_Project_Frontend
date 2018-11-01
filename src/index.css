@@ -146,11 +146,11 @@ code {
 }
 
 .btn{
-  margin-top: 20px;
-  margin-bottom: 20px;
+
   margin-right:auto;
   margin-left: auto;
-
+  text-transform: uppercase;
+  font-family: arial black;
 }
 
 .longWord{
@@ -158,13 +158,15 @@ code {
   word-wrap: break-word;
 }
 
+.row{
+  padding: 20px;
+}
+
 .question {
-  margin-top: 20px;
-  margin-bottom: 20px;
-
   margin-left: auto;
-  min-width: 50px;
+  margin-right: auto;
 
+  min-width: 50px;
   background-color: #36365c;
   color: white;
   border-top-left-radius: 5px;

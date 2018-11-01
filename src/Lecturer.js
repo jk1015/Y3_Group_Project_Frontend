@@ -80,11 +80,11 @@ class Lecturer extends Component {
     )
 
     var questionList = questions.map((question) =>
-    <div class="row longWord">
-      <div class="question col-9" key={question[0]}>
-        <p class="col-9 ">{question[0]}</p>: <p class="col-2">{question[1]}</p>
+    <div class="row longWord container-fluid">
+      <div class="question col-xl-11 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
+        <p class="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
       </div>
-      <button class="btn btn-warning col-2" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
+      <button class="btn btn-warning col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
     return (

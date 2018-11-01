@@ -182,13 +182,13 @@ class Student extends Component {
     )
 
     var questionList = questions.map((question) =>
-    <div class="row longWord">
-      <div class="question col-9" key={question[0]}>
-        <p class="col-9">{question[0]}</p>: <p class="col-2">{question[1]}</p>
+    <div class="row longWord container-fluid">
+      <div class="question col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
+        <p class="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
       </div>
         {!this.state.myQuestions.includes(question[0])?
-          <button class="btn btn-success col-2" onClick={()=>this.ask2(question[0])}>Ask</button>:
-          <button class="btn btn-danger col-2" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
+          <button class="btn btn-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Ask</button>:
+          <button class="btn btn-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
         }
       </div>
     );
@@ -232,7 +232,7 @@ class Student extends Component {
           </div>
         </div>
 
-        <div>{questionList}</div>
+        <div class="container-fluid">{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
         <Footer />
       </div>
