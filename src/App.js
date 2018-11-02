@@ -5,6 +5,7 @@ import Student from './Student';
 import Lecturer from './Lecturer';
 import SelectIdentity from './selectIdentity';
 import Room from './Room';
+import Join from './join';
 
 class App extends Component {
 
@@ -23,6 +24,10 @@ class App extends Component {
 
           <Route exact path='/room'
                 render={() => <Room/>}
+              />
+
+          <Route exact path='/join'
+                render={() => <Join/>}
               />
 
           <Route exact path='/student/:room'

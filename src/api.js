@@ -72,7 +72,7 @@ function Header(props) {
         <a class={className1} href="/">
           <p>Home</p>
         </a>
-        <a class={className2} href="/room">
+        <a class={className2} href="/join">
           <p>Rooms</p>
         </a>
       </nav>
