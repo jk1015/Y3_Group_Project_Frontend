@@ -8,6 +8,11 @@ const socket = openSocket('http://localhost:8080');
 function joinRoom(room) {
     socket.emit("join room", room);
 }
+
+function onDisconnect(questions, room) {
+    socket.on('disconnected', () => socket.emit('disconnected', questions, room));
+}
+
 function askQuestion(question, room) {
     socket.emit('question asked', question, room)
 }
@@ -72,7 +77,7 @@ function Header(props) {
         <a class={className1} href="/">
           <p>Home</p>
         </a>
-        <a class={className2} href="/room">
+        <a class={className2} href="/join">
           <p>Rooms</p>
         </a>
       </nav>
@@ -102,6 +107,7 @@ function Footer() {
 export {
     joinRoom,
     onClearAll,
+    onDisconnect,
     clearAll,
     askQuestion,
     onQuestionReceived,

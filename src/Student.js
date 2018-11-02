@@ -6,6 +6,7 @@ import { askQuestion,
   onQuestionAnswered,
   stopAsking,
   onQuestionReceived,
+  onDisconnect,
   Header,
   Footer
 } from './api';
@@ -126,21 +127,33 @@ class Student extends Component {
       if (questionMap.has(question)) {
          questionMap.delete(question);
       }
-
+      if (this.state.myQuestions.includes(question)) {
+        let i = this.state.myQuestions.indexOf(question);
+        this.state.myQuestions.splice(i, 1);
+      }
       this.setState({
         questionMap: questionMap,
         room: this.state.room
       });
     });
+
+    onDisconnect(this.state.myQuestions, this.state.room);
   }
 
   ask(){
-    askQuestion(this.state.data, this.state.room);
+    let question = this.state.data;
+    this.ask2(question)
     this.setState({data: ''});
+  }
 
-    let newMyQ = this.state.myQuestions.map(d=>({...d}));
-    newMyQ.push(this.state.data);
-    this.setState({myQuestions: newMyQ});
+  ask2(question){
+    if (!this.state.myQuestions.includes(question)) {
+      askQuestion(question, this.state.room);
+      //let newMyQ = this.state.myQuestions.map(d=>({...d}));
+      //newMyQ.push(question);
+      this.state.myQuestions.push(question);
+      //this.setState({myQuestions: newMyQ});
+    }
   }
 
   updateQuestionField(e) {
@@ -149,9 +162,12 @@ class Student extends Component {
 
   removeAsk(question){
     stopAsking(question, this.state.room);
-    let newMyQ = this.state.myQuestions.map(d=>({...d}));
-    newMyQ = newMyQ.filter((q) => q !== question)
-    this.setState({myQuestions: newMyQ});
+    //let newMyQ = this.state.myQuestions.map(d=>({...d}));
+    //newMyQ = newMyQ.filter((q) => q !== question)
+    //this.setState({myQuestions: newMyQ});
+    let i = this.state.myQuestions.indexOf(question);
+    this.state.myQuestions.splice(i, 1);
+    // TODO: duplicate array?
   }
 
   render() {
@@ -169,11 +185,13 @@ class Student extends Component {
     )
 
     var questionList = questions.map((question) =>
-      <div class="question" key={question[0]}>
-        {question[0]}: {question[1]}
+    <div class="row longWord container-fluid">
+      <div class="question col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
+        <p class="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+      </div>
         {!this.state.myQuestions.includes(question[0])?
-          <button class="button_info" onClick={()=>this.ask(question[0])}>Ask</button>:
-          <button class="button_info" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
+          <button class="btn btn-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Ask</button>:
+          <button class="btn btn-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
         }
       </div>
     );
@@ -200,24 +218,25 @@ class Student extends Component {
               faq_questions.style.display = "none";
               faq_button.innerHTML = "show FAQ &#9662;";
             }
-          }}>show FAQ &#9662;</p>
+          }}>hide FAQ &#9652;</p>
           <div id="faq_questions">
-            <p onClick={()=>askQuestion("I don't understand", this.state.room)}>
+            <br/>
+            <button class="btn btn-lg btn-danger" onClick={()=>this.ask2("I don't understand")}>
               I DON&#39;T UNDERSTAND
-            </p>
-            <p onClick={()=>askQuestion("Could you give an example?", this.state.room)}>
+            </button>
+            <button class="btn btn-lg btn-warning" onClick={()=>this.ask2("Could you give an example?")}>
               Could you give an example?
-            </p>
-            <p onClick={()=>askQuestion("Could you slow down?", this.state.room)}>
+            </button>
+            <button class="btn btn-lg btn-info" onClick={()=>this.ask2("Could you slow down?")}>
               Could you slow down?
-            </p>
-            <p onClick={()=>askQuestion("Could you speed up?", this.state.room)}>
+            </button>
+            <button class="btn btn-lg btn-success" onClick={()=>this.ask2("Could you speed up?")}>
               Could you speed up?
-            </p>
+            </button>
           </div>
         </div>
 
-        <div>{questionList}</div>
+        <div class="container-fluid">{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
         <Footer />
       </div>

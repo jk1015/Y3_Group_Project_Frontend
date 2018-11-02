@@ -80,9 +80,11 @@ class Lecturer extends Component {
     )
 
     var questionList = questions.map((question) =>
-      <div class="question" key={question[0]}>
-        <p>{question[0]}</p>: <p>{question[1]}</p>
-        <button class="button_info" onClick={()=>answerQuestion(question[0])}>Answer</button>
+    <div class="row longWord container-fluid">
+      <div class="question col-xl-11 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
+        <p class="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+      </div>
+      <button class="btn btn-warning col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
     return (
@@ -96,10 +98,25 @@ class Lecturer extends Component {
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
-         <div>{questionList}</div>
+
+         <div class="container-fluid">
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-danger progress-bar-striped" style={{ width : '80%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">I don't understand</div>
+           </div>
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-warning progress-bar-striped" style={{ width : '60%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you give an example?</div>
+           </div>
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-success progress-bar-striped" style={{ width : '30%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you speed up?</div>
+           </div>
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-primary progress-bar-striped" style={{ width : '20%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you slow down?</div>
+           </div>
+           <div id="questionList">{questionList}</div>
+         </div>
 
          <div id="Clear">
-           <button className="button_info" onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
+           <button className="btn btn-light " style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
          </div>
          <Footer />
        </div>
