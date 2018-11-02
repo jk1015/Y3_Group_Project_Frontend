@@ -6,6 +6,7 @@ import { askQuestion,
   onQuestionAnswered,
   stopAsking,
   onQuestionReceived,
+  onDisconnect,
   Header,
   Footer
 } from './api';
@@ -135,6 +136,8 @@ class Student extends Component {
         room: this.state.room
       });
     });
+
+    onDisconnect(this.state.myQuestions, this.state.room);
   }
 
   ask(){
@@ -215,7 +218,7 @@ class Student extends Component {
               faq_questions.style.display = "none";
               faq_button.innerHTML = "show FAQ &#9662;";
             }
-          }}>show FAQ &#9662;</p>
+          }}>hide FAQ &#9652;</p>
           <div id="faq_questions">
             <p onClick={()=>this.ask2("I don't understand")}>
               I DON&#39;T UNDERSTAND

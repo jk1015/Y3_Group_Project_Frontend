@@ -8,6 +8,11 @@ const socket = openSocket('group26-backend.herokuapp.com');
 function joinRoom(room) {
     socket.emit("join room", room);
 }
+
+function onDisconnect(questions, room) {
+    socket.on('disconnected', () => socket.emit('disconnected', questions, room));
+}
+
 function askQuestion(question, room) {
     socket.emit('question asked', question, room)
 }
@@ -102,6 +107,7 @@ function Footer() {
 export {
     joinRoom,
     onClearAll,
+    onDisconnect,
     clearAll,
     askQuestion,
     onQuestionReceived,

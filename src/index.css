@@ -105,7 +105,7 @@ code {
 
 #faq_questions {
   font-size: 0.7em;
-  display: none;
+  display: block;
 }
 
 #faq_button {
