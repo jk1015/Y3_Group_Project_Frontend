@@ -220,18 +220,19 @@ class Student extends Component {
             }
           }}>hide FAQ &#9652;</p>
           <div id="faq_questions">
-            <p onClick={()=>this.ask2("I don't understand")}>
+            <br/>
+            <button class="btn btn-lg btn-danger" onClick={()=>this.ask2("I don't understand")}>
               I DON&#39;T UNDERSTAND
-            </p>
-            <p onClick={()=>this.ask2("Could you give an example?")}>
+            </button>
+            <button class="btn btn-lg btn-warning" onClick={()=>this.ask2("Could you give an example?")}>
               Could you give an example?
-            </p>
-            <p onClick={()=>this.ask2("Could you slow down?")}>
+            </button>
+            <button class="btn btn-lg btn-info" onClick={()=>this.ask2("Could you slow down?")}>
               Could you slow down?
-            </p>
-            <p onClick={()=>this.ask2("Could you speed up?")}>
+            </button>
+            <button class="btn btn-lg btn-success" onClick={()=>this.ask2("Could you speed up?")}>
               Could you speed up?
-            </p>
+            </button>
           </div>
         </div>
 

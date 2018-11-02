@@ -98,10 +98,25 @@ class Lecturer extends Component {
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
-         <div class="container-fluid">{questionList}</div>
+
+         <div class="container-fluid">
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-danger progress-bar-striped" style={{ width : '80%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">I don't understand</div>
+           </div>
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-warning progress-bar-striped" style={{ width : '60%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you give an example?</div>
+           </div>
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-success progress-bar-striped" style={{ width : '30%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you speed up?</div>
+           </div>
+           <div class="progress" style={{height:'40px'}}>
+             <div class="progress-bar bg-primary progress-bar-striped" style={{ width : '20%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you slow down?</div>
+           </div>
+           <div id="questionList">{questionList}</div>
+         </div>
 
          <div id="Clear">
-           <button className="button_info " onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
+           <button className="btn btn-light " style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
          </div>
          <Footer />
        </div>
