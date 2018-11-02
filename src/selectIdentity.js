@@ -14,15 +14,15 @@ class SelectIdentity extends Component {
     {
       return(
         <div>
-          <Header value="Welcome"/>
+          <Header value="QuestHub"/>
           <div class="welcome_page_text">
-            <p>Have questions in lectures</p>
+            <p>Increasing engagement in the classroom through technology</p>
           </div>
           <div id="welcome_page_text_img">
-            <p>While the lecturer is asking</p>
+            <p>Ask questions without disrupting</p>
           </div>
           <div class="welcome_page_text">
-            <p>so just ask it using QuestHub</p>
+            <p>Receive better feedback</p>
           </div>
           <Footer />
         </div>
