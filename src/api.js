@@ -1,9 +1,10 @@
 import openSocket from 'socket.io-client';
 import React, { Component } from 'react';
 
-//change to heroku for deployment
-const socket = openSocket('group26-backend.herokuapp.com');
-//const socket = openSocket('http://localhost:8080');
+//NOTE: Don't deploy to heroku! LDAP access can only be done whilst in DoC!
+//const socket = openSocket('group26-backend.herokuapp.com');
+
+const socket = openSocket('http://localhost:8080');
 
 function joinRoom(room) {
     socket.emit("join room", room);
@@ -53,6 +54,14 @@ function connectRoom() {
 
 function stopAsking(question, room) {
   socket.emit('stop asking', question, room);
+}
+
+function login(username, password) {
+  socket.emit('login', username, password);
+}
+
+function onCoursesReceived(cb) {
+  socket.on('courses received', courses => cb(courses));
 }
 
 function Header(props) {
@@ -118,5 +127,7 @@ export {
     Header,
     onRoomsRecieved,
     connectRoom,
-    Footer
+    Footer,
+    login,
+    onCoursesReceived
 }
