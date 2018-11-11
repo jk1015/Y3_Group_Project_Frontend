@@ -3,7 +3,8 @@ import {
   Header,
   Footer,
   login,
-  onCoursesReceived
+  onCoursesReceived,
+  onLoginError
 } from './api';
 
 class Join extends Component {
@@ -15,7 +16,8 @@ class Join extends Component {
       roomName : "",
       user : "",
       password : "",
-      courses : []
+      courses : [],
+      error: undefined
     }
 
     this.updateRoomField = this.updateRoomField.bind(this);
@@ -25,6 +27,10 @@ class Join extends Component {
     onCoursesReceived(courses => {
       let newList = courses.courses;
       this.setState({courses: newList});
+    });
+
+    onLoginError(message => {
+      this.setState({error: message});
     });
   }
 
@@ -41,6 +47,8 @@ class Join extends Component {
   }
 
   loginUser() {
+    this.setState({error: undefined});
+    
     let user = this.state.user;
     let password = this.state.password;
     login(user, password);
@@ -74,6 +82,7 @@ class Join extends Component {
                   onChange={this.updatePasswordField}/>
               <button type="button" onClick={()=>this.loginUser()}>Login</button>
             </form>
+            <p>{this.state.error}</p>
             <h2>Courses:</h2>
             <p>{courseList}</p>
             <div id="Question_box">
