@@ -185,15 +185,15 @@ class Student extends Component {
     )
 
     var questionList = questions.map((question) =>
-    <div class="row longWord container-fluid">
-      <div class="question col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
-        <p class="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
-      </div>
-        {!this.state.myQuestions.includes(question[0])?
-          <button class="btn btn-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Ask</button>:
-          <button class="btn btn-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
-        }
-      </div>
+      <div className="row longWord container-fluid">
+        <div className="question col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
+          <p className="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+        </div>
+          {!this.state.myQuestions.includes(question[0])?
+            <button className="btn btn-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Ask</button>:
+            <button className="btn btn-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Stop Asking</button>
+          }
+        </div>
     );
 
 
@@ -221,22 +221,22 @@ class Student extends Component {
           }}>hide FAQ &#9652;</p>
           <div id="faq_questions">
             <br/>
-            <button class="btn btn-lg btn-danger" onClick={()=>this.ask2("I don't understand")}>
+            <button className="btn btn-lg btn-danger" onClick={()=>this.ask2("I don't understand")}>
               I DON&#39;T UNDERSTAND
             </button>
-            <button class="btn btn-lg btn-warning" onClick={()=>this.ask2("Could you give an example?")}>
+            <button className="btn btn-lg btn-warning" onClick={()=>this.ask2("Could you give an example?")}>
               Could you give an example?
             </button>
-            <button class="btn btn-lg btn-info" onClick={()=>this.ask2("Could you slow down?")}>
+            <button className="btn btn-lg btn-info" onClick={()=>this.ask2("Could you slow down?")}>
               Could you slow down?
             </button>
-            <button class="btn btn-lg btn-success" onClick={()=>this.ask2("Could you speed up?")}>
+            <button className="btn btn-lg btn-success" onClick={()=>this.ask2("Could you speed up?")}>
               Could you speed up?
             </button>
           </div>
         </div>
 
-        <div class="container-fluid">{questionList}</div>
+        <div className="container-fluid">{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
         <Footer />
       </div>

@@ -3,8 +3,8 @@ import {
   Header,
   Footer,
   login,
-  onCoursesReceived,
-  onLoginError
+  onLoginError,
+  onCourseReceived
 } from './api';
 
 class Join extends Component {
@@ -24,9 +24,16 @@ class Join extends Component {
     this.updateUserField = this.updateUserField.bind(this);
     this.updatePasswordField = this.updatePasswordField.bind(this);
 
-    onCoursesReceived(courses => {
-      let newList = courses.courses;
-      this.setState({courses: newList});
+    onCourseReceived(course => {
+      console.log(course);
+      if(course && course !== null){
+        let url = '/student/' + course;
+        window.location.href = url;
+      }
+      else{
+        this.setState({error: 'No lecture for any course now'});
+      }
+
     });
 
     onLoginError(message => {
@@ -48,15 +55,13 @@ class Join extends Component {
 
   loginUser() {
     this.setState({error: undefined});
-    
+
     let user = this.state.user;
     let password = this.state.password;
     login(user, password);
   }
 
   studentPage() {
-    let url = '/student/' + this.state.roomName;
-    window.location.href = url;
   }
 
   lecturerPage() {

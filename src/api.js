@@ -60,8 +60,8 @@ function login(username, password) {
   socket.emit('login', username, password);
 }
 
-function onCoursesReceived(cb) {
-  socket.on('courses received', courses => cb(courses));
+function onCourseReceived(cb) {
+  socket.on('course received', course => cb(course));
 }
 
 function onLoginError(cb) {
@@ -133,6 +133,6 @@ export {
     connectRoom,
     Footer,
     login,
-    onCoursesReceived,
-    onLoginError
+    onLoginError,
+    onCourseReceived
 }
