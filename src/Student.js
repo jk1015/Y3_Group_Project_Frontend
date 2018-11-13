@@ -191,7 +191,7 @@ class Student extends Component {
         <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
       </div>
         {!this.state.myQuestions.includes(question[0])?
-          <button class="btn badge-pill btn-outline-warning col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
+          <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
           <button class="btn badge-pill btn-outline-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Undo vote</button>
         }
       </div>
@@ -211,7 +211,7 @@ class Student extends Component {
             faq_button.innerHTML = "show  &#9662;";
           }
         }}>hide &#9652;</a>
-        <h1 id="faq_instruction" class="display-4 my-5">How do you feel about the lecture?</h1>
+        <h2 id="faq_instruction" class="display-4 my-5">How do you feel about the lecture?</h2>
         <div id="faq_questions" class="row">
           <br/>
           <button class="btn badge-pill btn-lg btn-outline-danger col-10 col-md-5 m-3" onClick={()=>this.ask2("I don't understand!")}>
@@ -239,7 +239,7 @@ class Student extends Component {
             faq_button.innerHTML = "show &#9662;";
           }
         }}>hide &#9652;</a>
-        <h1 id="question_instruction" class="display-4 my-5">Ask a question of your own!</h1>
+        <h2 id="question_instruction" class="display-4 my-5">Ask a question of your own!</h2>
         <div class="input-group container-fluid col-9 mt-5">
           <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
           <div class="input-group-append my-4">
@@ -259,7 +259,7 @@ class Student extends Component {
             faq_button.innerHTML = "show &#9662;";
           }
         }}>hide &#9652;</a>
-        <h1 id="vote_instruction" class="display-4 my-5">Or you can vote on questions!</h1>
+        <h2 id="vote_instruction" class="display-4 my-5">Or you can vote on questions!</h2>
         <div class="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
 
