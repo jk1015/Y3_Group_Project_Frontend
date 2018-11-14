@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Bar } from 'react-chartjs-2';
 
 import {
     onClearAll,
@@ -14,22 +15,63 @@ import {
 
 const HashMap = require('hashmap');
 
-class Lecturer extends Component {
+class Lecturer extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state ={
         questionMap: new HashMap(),
-        room: props.value
+        room: props.value,
+        data: {
+            labels: ["I don't understand!", "Could you give an example?", "Could you slow down?", "Could you speed up?"],
+            datasets: [{
+                label: '',
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.4)',
+                    'rgba(255, 206, 86, 0.4)',
+                    'rgba(54, 162, 235, 0.4)',
+                    'rgba(75, 192, 192, 0.4)',
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero:true
+              }
+            }],
+            xAxes: [{
+              ticks:{
+                display: false
+              }
+            }]
+          },
+          legend:{
+            display:false
+          }
+        }
     }
 
     connectLecturer(this.state.room, questionMap =>{
       let map = new HashMap();
-      map.copy(questionMap)
+      map.copy(questionMap);
+      var dataNew=this.state.data;
+      dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an example?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
       this.setState({
           questionMap: map,
-          room: this.state.room
+          room: this.state.room,
+          data: dataNew,
+          options: this.state.options
       })
     });
 
@@ -40,34 +82,43 @@ class Lecturer extends Component {
           map.delete(questionTally.question)
         else
           map.set(questionTally.question, questionTally.number);
-
+          var dataNew=this.state.data;
+          dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an example?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
         this.setState({
             questionMap: map,
-            room: this.state.room
+            room: this.state.room,
+            data: dataNew,
+            options: this.state.options
         })
     });
 
     onQuestionAnswered(question => {
         let map = this.state.questionMap;
         map.delete(question);
+        var dataNew=this.state.data;
+        dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an example?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
         this.setState({
             questionMap: map,
-            room: this.state.room
+            room: this.state.room,
+            data: dataNew,
+            options: this.state.options
         })
     });
 
     onClearAll(() => {
         let map = new HashMap();
+        var dataNew=this.state.data;
+        dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an emample?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
         this.setState({
         questionMap: map,
-        room: this.state.room
+        room: this.state.room,
+        data: dataNew,
+        options: this.state.options
         });
     });
   }
-
   render() {
     var questions = [];
-
     this.state.questionMap.keys().forEach(
       function(key) {
         questions.push([key, this.state.questionMap.get(key)]);
@@ -80,46 +131,58 @@ class Lecturer extends Component {
     )
 
     var questionList = questions.map((question) =>
-    <div class="row longWord container-fluid">
-      <div class="question col-xl-11 col-lg-10 col-md-10 col-sm-9 col-xs-12" key={question[0]}>
-        <p class="col-8">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+    <div class="row longWord">
+      <hr class=" w-100"/>
+      <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
+        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
       </div>
-      <button class="btn btn-warning col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
+      <button class="btn btn-outline-warning col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
     return (
        <div>
-         <Header value={"Lecturer\nRoom: " + this.state.room}/>
-         <p>Lecturer</p>
-           <tr></tr>
          {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
 
          <p className="DontUnderstandText">Number of students who don&#39;t understand: {this.state.questionMap.get("I don't understand")}</p>
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
-
-         <div class="container-fluid">
-           <div class="progress" style={{height:'40px'}}>
-             <div class="progress-bar bg-danger progress-bar-striped" style={{ width : '80%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">I don't understand</div>
+           <a id="chart_button" class="hide_button" href="#" onClick={()=>{
+             let faq_questions = document.getElementById("chart_instruction");
+             let faq_button = document.getElementById("chart_button");
+             if (faq_questions.style.display === "none") {
+               faq_questions.style.display = "block";
+               faq_button.innerHTML = "hide &#9652;";
+             } else {
+               faq_questions.style.display = "none";
+               faq_button.innerHTML = "show  &#9662;";
+             }
+           }}>hide &#9652;</a>
+           <h2 id="chart_instruction" class="display-4 my-5">Students now feel...</h2>
+           <div class="container my-3">
+             <Bar
+               data={this.state.data}
+               options={this.state.options}
+             />
            </div>
-           <div class="progress" style={{height:'40px'}}>
-             <div class="progress-bar bg-warning progress-bar-striped" style={{ width : '60%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you give an example?</div>
+           <hr class="mt-5 mb-0"/>
+           <a id="studentQuestions_button" class="hide_button" href="#" onClick={()=>{
+             let faq_questions = document.getElementById("studentQuestions_instruction");
+             let faq_button = document.getElementById("studentQuestions_button");
+             if (faq_questions.style.display === "none") {
+               faq_questions.style.display = "block";
+               faq_button.innerHTML = "hide &#9652;";
+             } else {
+               faq_questions.style.display = "none";
+               faq_button.innerHTML = "show  &#9662;";
+             }
+           }}>hide &#9652;</a>
+           <h2 id="studentQuestions_instruction" class="display-4 my-5">Questions asked by students are here!</h2>
+           <div class="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
+           <div id="Clear">
+             <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
            </div>
-           <div class="progress" style={{height:'40px'}}>
-             <div class="progress-bar bg-success progress-bar-striped" style={{ width : '30%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you speed up?</div>
-           </div>
-           <div class="progress" style={{height:'40px'}}>
-             <div class="progress-bar bg-primary progress-bar-striped" style={{ width : '20%' }} id="redBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Can you slow down?</div>
-           </div>
-           <div id="questionList">{questionList}</div>
          </div>
-
-         <div id="Clear">
-           <button className="btn btn-light " style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
-         </div>
-         <Footer />
-       </div>
     );
   }
 }
