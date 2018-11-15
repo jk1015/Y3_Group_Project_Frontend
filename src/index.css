@@ -108,11 +108,10 @@ code {
   display: block;
 }
 
-#faq_button {
-  font-size: 0.5em;
+.hide_button {
+  font-size: 0.7em;
   width: 100px;
   display: block;
-  float:right;
   margin: 0;
 }
 
@@ -142,6 +141,7 @@ code {
   border-left: none;
   border-right: none;
   border-top: none;
+  color: black;
   margin-bottom: 10px;
 }
 
@@ -151,10 +151,6 @@ code {
 
 .btn{
 
-  margin-right:auto;
-  margin-left: auto;
-  text-transform: uppercase;
-  font-family: impact;
 }
 
 .longWord{
