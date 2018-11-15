@@ -32,9 +32,11 @@ class Join extends Component {
       console.log(course);
       if(course.lecture !== null){
         if (course.doc_user === "student") {
-          redirectTo('/student/' + course.lecture);
+          redirectTo('/student/' + course.displayName + "/" + course.login +
+            "/" + course.lecture);
         } else {
-          redirectTo('/lecturer/' + course.lecture)
+          redirectTo('/lecturer/' + course.displayName + "/" + course.login +
+            "/" + course.lecture)
         }
       }
       else{

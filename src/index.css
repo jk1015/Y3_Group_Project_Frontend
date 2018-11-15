@@ -288,3 +288,8 @@ code {
   float: right;
   margin-right: 20px;
 }
+
+#logging_header {
+  float: right;
+  margin-right: 10px;
+}

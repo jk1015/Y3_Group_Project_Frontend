@@ -22,7 +22,9 @@ class Lecturer extends React.Component {
 
     this.state ={
         questionMap: new HashMap(),
-        room: props.value,
+        room: this.props.value[2],
+        login: this.props.value[1],
+        name: this.props.value[0],
         data: {
             labels: ["I don't understand!", "Could you give an example?", "Could you slow down?", "Could you speed up?"],
             datasets: [{
@@ -66,7 +68,11 @@ class Lecturer extends React.Component {
       let map = new HashMap();
       map.copy(questionMap);
       var dataNew=this.state.data;
-      dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an example?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
+      dataNew.datasets[0].data=[
+        map.get("I don't understand!") ? map.get("I don't understand!").count : null,
+        map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
+        map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
+        map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
       this.setState({
           questionMap: map,
           room: this.state.room,
@@ -78,12 +84,16 @@ class Lecturer extends React.Component {
     onQuestionReceived(questionTally => {
         let map = this.state.questionMap;
 
-        if(questionTally.number <= 0)
+        if(questionTally.data.count <= 0)
           map.delete(questionTally.question)
         else
-          map.set(questionTally.question, questionTally.number);
+          map.set(questionTally.question, questionTally.data);
           var dataNew=this.state.data;
-          dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an example?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
+          dataNew.datasets[0].data=[
+            map.get("I don't understand!") ? map.get("I don't understand!").count : null,
+            map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
+            map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
+            map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
         this.setState({
             questionMap: map,
             room: this.state.room,
@@ -96,7 +106,11 @@ class Lecturer extends React.Component {
         let map = this.state.questionMap;
         map.delete(question);
         var dataNew=this.state.data;
-        dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an example?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
+        dataNew.datasets[0].data=[
+          map.get("I don't understand!") ? map.get("I don't understand!").count : null,
+          map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
+          map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
+          map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
         this.setState({
             questionMap: map,
             room: this.state.room,
@@ -108,7 +122,11 @@ class Lecturer extends React.Component {
     onClearAll(() => {
         let map = new HashMap();
         var dataNew=this.state.data;
-        dataNew.datasets[0].data=[map.get("I don't understand!"),map.get("Could you give an emample?"),map.get("Could you slow down?"),map.get("Could you speed up?")];
+        dataNew.datasets[0].data=[
+          map.get("I don't understand!") ? map.get("I don't understand!").count : null,
+          map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
+          map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
+          map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
         this.setState({
         questionMap: map,
         room: this.state.room,
@@ -134,19 +152,25 @@ class Lecturer extends React.Component {
     <div class="row longWord">
       <hr class=" w-100"/>
       <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
-        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1].count}</p>
+        <p>{"Asked by: " + question[1].users.map(user => {
+          return user.name;
+        })}</p>
       </div>
       <button class="btn btn-outline-warning col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
     return (
        <div>
+         <h1>{"Room " + this.state.room}</h1>
+         <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
          {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
 
          <p className="DontUnderstandText">Number of students who don&#39;t understand: {this.state.questionMap.get("I don't understand")}</p>
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
+
            <a id="chart_button" class="hide_button" href="#" onClick={()=>{
              let faq_questions = document.getElementById("chart_instruction");
              let faq_button = document.getElementById("chart_button");

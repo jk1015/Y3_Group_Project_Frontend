@@ -30,12 +30,16 @@ class App extends Component {
                 render={() => <Join/>}
               />
 
-          <Route exact path='/student/:room'
-                render={({match}) => <Student value={match.params.room}/>}
+          <Route exact path='/student/:name/:login/:room'
+                render={({match}) => <Student value={[match.params.name,
+                  match.params.login,
+                  match.params.room]}/>}
               />
 
-          <Route exact path='/lecturer/:room'
-                render={({match}) => <Lecturer value={match.params.room}/>}
+          <Route exact path='/lecturer/:name/:login/:room'
+                render={({match}) => <Lecturer value={[match.params.name,
+                  match.params.login,
+                  match.params.room]}/>}
               />
           </div>
       </Router>

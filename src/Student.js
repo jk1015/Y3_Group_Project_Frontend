@@ -85,7 +85,9 @@ class Student extends Component {
        data: '',
        questionMap: new HashMap(),
        myQuestions: [],
-       room: this.props.value
+       room: this.props.value[2],
+       login: this.props.value[1],
+       name: this.props.value[0]
     }
 
     this.updateQuestionField = this.updateQuestionField.bind(this);
@@ -96,29 +98,26 @@ class Student extends Component {
       let map = new HashMap();
       map.copy(questionMap)
       this.setState({
-          questionMap: map,
-          room: props.value
+          questionMap: map
       })
     });
 
     onQuestionReceived(questionTally => {
       let map = this.state.questionMap;
 
-      if(questionTally.number <= 0)
+      if(questionTally.data.count <= 0)
         map.delete(questionTally.question)
       else
-        map.set(questionTally.question, questionTally.number);
+        map.set(questionTally.question, questionTally.data.count);
 
       this.setState({
-          questionMap: map,
-          room: this.state.room
+          questionMap: map
       })
     });
 
     onClearAll(() => {
       this.setState({
-        questionMap: new HashMap(),
-        room: this.state.room
+        questionMap: new HashMap()
       });
     });
 
@@ -148,7 +147,9 @@ class Student extends Component {
 
   ask2(question){
     if (!this.state.myQuestions.includes(question)) {
-      askQuestion(question, this.state.room);
+      askQuestion(question, {room: this.state.room,
+        login: this.state.login,
+        name: this.state.name});
       //let newMyQ = this.state.myQuestions.map(d=>({...d}));
       //newMyQ.push(question);
       this.state.myQuestions.push(question);
@@ -161,7 +162,9 @@ class Student extends Component {
   }
 
   removeAsk(question){
-    stopAsking(question, this.state.room);
+    stopAsking(question, {room: this.state.room,
+      login: this.state.login,
+      name: this.state.name});
     //let newMyQ = this.state.myQuestions.map(d=>({...d}));
     //newMyQ = newMyQ.filter((q) => q !== question)
     //this.setState({myQuestions: newMyQ});
@@ -188,7 +191,7 @@ class Student extends Component {
     <div class="row longWord">
       <hr class=" w-100"/>
       <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
-        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1].count}</p>
       </div>
         {!this.state.myQuestions.includes(question[0])?
           <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
@@ -200,6 +203,8 @@ class Student extends Component {
 
     return (
       <div>
+        <h1>{"Room " + this.state.room}</h1>
+        <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
         <a id="faq_button" class="hide_button" href="#" onClick={()=>{
           let faq_questions = document.getElementById("faq_instruction");
           let faq_button = document.getElementById("faq_button");

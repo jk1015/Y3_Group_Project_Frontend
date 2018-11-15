@@ -15,8 +15,8 @@ function onDisconnect(questions, room) {
     socket.on('disconnected', () => socket.emit('disconnected', questions, room));
 }
 
-function askQuestion(question, room) {
-    socket.emit('question asked', question, room)
+function askQuestion(question, user) {
+    socket.emit('question asked', question, user);
 }
 
 function onQuestionReceived(cb) {
