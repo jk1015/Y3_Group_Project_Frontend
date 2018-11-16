@@ -15,13 +15,13 @@ class SelectIdentity extends Component {
       return(
         <div>
           <Header value="QuestHub"/>
-          <div class="welcome_page_text">
+          <div className="welcome_page_text">
             <p>Increasing engagement in the classroom through technology</p>
           </div>
           <div id="welcome_page_text_img">
             <p>Ask questions without disrupting</p>
           </div>
-          <div class="welcome_page_text">
+          <div className="welcome_page_text">
             <p>Receive better feedback</p>
           </div>
           <Footer />

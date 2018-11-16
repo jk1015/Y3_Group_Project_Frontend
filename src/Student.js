@@ -85,9 +85,9 @@ class Student extends Component {
        data: '',
        questionMap: new HashMap(),
        myQuestions: [],
-       room: this.props.value[2],
-       login: this.props.value[1],
-       name: this.props.value[0]
+       room: props.value[2],
+       login: props.value[1],
+       name: props.value[0]
     }
 
     this.updateQuestionField = this.updateQuestionField.bind(this);
