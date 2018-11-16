@@ -104,8 +104,7 @@ class Student extends Component {
 
     onQuestionReceived(questionTally => {
       let map = this.state.questionMap;
-
-      if(questionTally.data.count <= 0)
+      if(questionTally.data == null || questionTally.data.count <= 0)
         map.delete(questionTally.question)
       else
         map.set(questionTally.question, questionTally.data.count);
