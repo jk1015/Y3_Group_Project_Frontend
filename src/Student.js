@@ -96,9 +96,16 @@ class Student extends Component {
 
     connectLecturer(this.state.room, questionMap =>{
       let map = new HashMap();
+      let map2 = new HashMap();
       map.copy(questionMap)
+      let keys = map.keys();
+      for (var i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        let val = map.get(key).count;
+        map2.set(key, val);
+      }
       this.setState({
-          questionMap: map
+          questionMap: map2
       })
     });
 
@@ -190,7 +197,7 @@ class Student extends Component {
     <div class="row longWord">
       <hr class=" w-100"/>
       <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
-        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1].count}</p>
+        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
       </div>
         {!this.state.myQuestions.includes(question[0])?
           <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
