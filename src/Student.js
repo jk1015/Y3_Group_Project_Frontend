@@ -84,7 +84,7 @@ class Student extends Component {
     this.state = {
        data: '',
        questionMap: new HashMap(),
-       myQuestions: [],
+       myQuestions: new HashMap(), //[], // [{'quesion', id}]
        room: props.value[2],
        login: props.value[1],
        name: props.value[0]
@@ -119,6 +119,19 @@ class Student extends Component {
       this.setState({
           questionMap: map
       })
+
+      let myQuestions = this.state.myQuestions;
+      if(questionTally.user === props.value[1]){
+        if(questionTally.data == null || questionTally.data.count <= 0)
+          myQuestions.delete(questionTally.question)
+        else
+          myQuestions.set(questionTally.question, questionTally.id);
+      }
+
+      this.setState({
+          myQuestions: myQuestions
+      })
+
     });
 
     onClearAll(() => {
@@ -129,13 +142,18 @@ class Student extends Component {
 
     onQuestionAnswered(question => {
       let questionMap = this.state.questionMap;
+      let myQuestions = this.state.myQuestions;
+
       if (questionMap.has(question)) {
          questionMap.delete(question);
       }
-      if (this.state.myQuestions.includes(question)) {
-        let i = this.state.myQuestions.indexOf(question);
-        this.state.myQuestions.splice(i, 1);
+      if (myQuestions.has(question)) {
+         myQuestions.delete(question);
       }
+      // if (this.state.myQuestions.includes(question)) {
+      //   let i = this.state.myQuestions.indexOf(question);
+      //   this.state.myQuestions.splice(i, 1);
+      // }
       this.setState({
         questionMap: questionMap,
         room: this.state.room
@@ -152,14 +170,14 @@ class Student extends Component {
   }
 
   ask2(question){
-    if (!this.state.myQuestions.includes(question)) {
+    if(!this.state.myQuestions.has(question)){
+    // if (!this.state.myQuestions.includes(question)) {
       askQuestion(question, {room: this.state.room,
         login: this.state.login,
         name: this.state.name});
-      //let newMyQ = this.state.myQuestions.map(d=>({...d}));
-      //newMyQ.push(question);
-      this.state.myQuestions.push(question);
-      //this.setState({myQuestions: newMyQ});
+
+      this.state.myQuestions.set(question, '');
+
     }
   }
 
@@ -174,13 +192,19 @@ class Student extends Component {
     //let newMyQ = this.state.myQuestions.map(d=>({...d}));
     //newMyQ = newMyQ.filter((q) => q !== question)
     //this.setState({myQuestions: newMyQ});
-    let i = this.state.myQuestions.indexOf(question);
-    this.state.myQuestions.splice(i, 1);
+
+    // let i = this.state.myQuestions.indexOf(question);
+    // this.state.myQuestions.splice(i, 1);
+
+    if(this.state.myQuestions.has(question)){
+      this.state.myQuestions.delete(question)
+    }
     // TODO: duplicate array?
   }
 
   render() {
     var questions = [];
+    console.log(this.state.myQuestions);
 
     this.state.questionMap.keys().forEach(
       function(key) {
@@ -194,12 +218,12 @@ class Student extends Component {
     )
 
     var questionList = questions.map((question) =>
-    <div class="row longWord">
+    <div class="row longWord" key={question}>
       <hr class=" w-100"/>
       <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
         <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
       </div>
-        {!this.state.myQuestions.includes(question[0])?
+        {!this.state.myQuestions.has(question[0])?
           <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
           <button class="btn badge-pill btn-outline-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Undo vote</button>
         }
