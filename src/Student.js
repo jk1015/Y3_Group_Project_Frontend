@@ -186,9 +186,12 @@ class Student extends Component {
   }
 
   removeAsk(question){
-    stopAsking(question, {room: this.state.room,
+    stopAsking(question, {
+      room: this.state.room,
       login: this.state.login,
-      name: this.state.name});
+      name: this.state.name,
+      question_id: myQuestions.get(question)}
+    );
     //let newMyQ = this.state.myQuestions.map(d=>({...d}));
     //newMyQ = newMyQ.filter((q) => q !== question)
     //this.setState({myQuestions: newMyQ});
