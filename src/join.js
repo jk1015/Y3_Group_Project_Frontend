@@ -48,7 +48,10 @@ class Join extends Component {
         displayName : course.displayName,
         login : course.login
       });
-      //redirectToRoom();
+      if (!isLecturer) {
+        this.redirectToRoom();
+      }
+
 
     });
 
@@ -139,6 +142,12 @@ class Join extends Component {
           <button type="button" onClick={()=>this.redirectToRoom()}>
             Join {this.state.currentcourse}
           </button>
+        </div>
+      } else {
+        courseButton =
+        <div>
+        <h2>No lectures in progress.</h2>
+        <p>If you think you should be in a lecture, check your enrolment below.</p>
         </div>
       }
 
