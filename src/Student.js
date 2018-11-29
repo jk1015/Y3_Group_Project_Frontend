@@ -111,27 +111,28 @@ class Student extends Component {
 
     onQuestionReceived(questionTally => {
       let map = this.state.questionMap;
-      if(questionTally.data == null || questionTally.data.count <= 0)
-        map.delete(questionTally.question)
-      else
-        map.set(questionTally.question, questionTally.data.count);
+      if(questionTally.data == null || questionTally.data.count <= 0) {
+          map.delete(questionTally.question);
+      } else {
+          map.set(questionTally.question, questionTally.data.count);
+      }
 
       this.setState({
           questionMap: map
-      })
+      });
 
       let myQuestions = this.state.myQuestions;
-      if(questionTally.user === props.value[1]){
-        if(questionTally.data == null || questionTally.data.count <= 0)
-          myQuestions.delete(questionTally.question)
-        else
-          myQuestions.set(questionTally.question, questionTally.id);
+      if (questionTally.user === props.value[1]) {
+        if (questionTally.data == null || questionTally.data.count <= 0) {
+            myQuestions.delete(questionTally.question)
+        } else {
+            myQuestions.set(questionTally.question, questionTally.question_id.id);
+        }
       }
 
       this.setState({
           myQuestions: myQuestions
       })
-
     });
 
     onClearAll(() => {
@@ -165,7 +166,7 @@ class Student extends Component {
 
   ask(){
     let question = this.state.data;
-    this.ask2(question)
+    this.ask2(question);
     this.setState({data: ''});
   }
 
@@ -190,7 +191,7 @@ class Student extends Component {
       room: this.state.room,
       login: this.state.login,
       name: this.state.name,
-      question_id: myQuestions.get(question)}
+      question_id: this.state.myQuestions.get(question)}
     );
     //let newMyQ = this.state.myQuestions.map(d=>({...d}));
     //newMyQ = newMyQ.filter((q) => q !== question)
