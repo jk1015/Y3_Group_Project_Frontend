@@ -103,6 +103,31 @@ class Join extends Component {
 
   render()
     {
+      var loginBox;
+      if (!this.state.loggedIn) {
+        loginBox =
+        <div>
+        <h2>Login</h2>
+        <form id="Login">
+          <h3>Username</h3>
+            <input type="text" value={this.state.user}
+              onChange={this.updateUserField}/>
+          <h3>Password</h3>
+            <input type="password" value={this.state.password}
+              onChange={this.updatePasswordField}/>
+          <button type="button" onClick={()=>this.loginUser()}>Login</button>
+        </form>
+        <p>{this.state.error}</p>
+        </div>
+      } else {
+        loginBox =
+        <div>
+        <p>Logged in as: {this.state.displayName}</p>
+        <p>Type: {this.state.isLecturer ? "Lecturer" : "Student"}</p>
+        <button type="button" onClick={()=>redirectTo('')}>Logout</button>
+        </div>
+      }
+
       var courseList = this.state.courses.map((course) =>
       <p>{course}</p>);
 
@@ -132,17 +157,7 @@ class Join extends Component {
       return(
         <div>
           <Header value="QuestHub"/>
-            <h2>Login</h2>
-            <form id="Login">
-              <h3>Username</h3>
-                <input type="text" value={this.state.user}
-                  onChange={this.updateUserField}/>
-              <h3>Password</h3>
-                <input type="password" value={this.state.password}
-                  onChange={this.updatePasswordField}/>
-              <button type="button" onClick={()=>this.loginUser()}>Login</button>
-            </form>
-            <p>{this.state.error}</p>
+            {loginBox}
             {courseDisplay}
           <Footer />
         </div>
