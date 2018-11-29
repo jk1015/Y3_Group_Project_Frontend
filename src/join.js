@@ -21,33 +21,54 @@ class Join extends Component {
       user : "",
       password : "",
       courses : [],
-      error: undefined
+      currentcourse : null,
+      error: undefined,
+      isLecturer : false,
+      loggedIn : false,
+      displayName : "",
+      login : ""
     }
 
     this.updateRoomField = this.updateRoomField.bind(this);
     this.updateUserField = this.updateUserField.bind(this);
     this.updatePasswordField = this.updatePasswordField.bind(this);
+    this.redirectToRoom = this.redirectToRoom.bind(this);
 
     onCourseReceived(course => {
       console.log(course);
-      if(course.lecture !== null){
-        if (course.doc_user === "student") {
-          redirectTo('/student/' + course.displayName + "/" + course.login +
-            "/" + course.lecture);
-        } else {
-          redirectTo('/lecturer/' + course.displayName + "/" + course.login +
-            "/" + course.lecture)
-        }
-      }
-      else{
-        this.setState({error: 'No lecture for any course now'});
-      }
+      let isLecturer = false;
+      if (course.doc_user == "lecturer") {
+        isLecturer = true;
+      };
+      this.setState({
+        currentcourse: course.lecture,
+        courses: course.courses,
+        loggedIn : true,
+        isLecturer : isLecturer,
+        displayName : course.displayName,
+        login : course.login
+      });
+      //redirectToRoom();
 
     });
 
     onLoginError(message => {
       this.setState({error: message});
     });
+  }
+
+  redirectToRoom() {
+    if(this.state.currentcourse !== null){
+      if (!this.state.isLecturer) {
+        redirectTo('/student/' + this.state.displayName + "/" + this.state.login +
+          "/" + this.state.currentcourse);
+      } else {
+        redirectTo('/lecturer/' + this.state.displayName + "/" + this.state.login +
+          "/" + this.state.currentcourse)
+      }
+    } else {
+      this.setState({error: 'No lecture for any course now'});
+    }
   }
 
   updateRoomField(e) {
@@ -85,6 +106,29 @@ class Join extends Component {
       var courseList = this.state.courses.map((course) =>
       <p>{course}</p>);
 
+      var courseButton = null;
+      if (this.state.currentcourse != null) {
+        courseButton =
+        <div>
+          <h2>Lecture in progress:</h2>
+          <button type="button" onClick={()=>this.redirectToRoom()}>
+            Join {this.state.currentcourse}
+          </button>
+        </div>
+      }
+
+      var courseDisplay = null;
+      if (this.state.courses.length > 0) {
+        courseDisplay =
+        <div>
+        {courseButton}
+        <h2>Courses:</h2>
+        {courseList}
+        </div>
+      }
+
+
+
       return(
         <div>
           <Header value="QuestHub"/>
@@ -99,17 +143,7 @@ class Join extends Component {
               <button type="button" onClick={()=>this.loginUser()}>Login</button>
             </form>
             <p>{this.state.error}</p>
-            <h2>Courses:</h2>
-            <p>{courseList}</p>
-            <div id="Question_box">
-              <h2>Join a Room</h2>
-              <form id="Question_form">
-                <input type="text" value={this.state.roomName}
-                  onChange={this.updateRoomField}/>
-              </form>
-              <button type="button" onClick={()=>this.studentPage()}>Student</button>
-              <button type="button" onClick={()=>this.lecturerPage()}>Lecturer</button>
-            </div>
+            {courseDisplay}
           <Footer />
         </div>
       );
