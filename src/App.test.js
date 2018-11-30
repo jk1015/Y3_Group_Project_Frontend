@@ -32,7 +32,7 @@ describe('<Join />', () => {
 
   it('renders forms', () => {
     const join_area = shallow(<Join />);
-    expect(join_area.find('form').length).toEqual(2);
+    expect(join_area.find('form').length).toEqual(1);
   });
 
 });
