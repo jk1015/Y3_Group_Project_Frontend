@@ -69,6 +69,14 @@ function onLoginError(cb) {
   socket.on('login error', message => cb(message));
 }
 
+function requestCourseData(course) {
+  socket.emit('request course data', course);
+}
+
+function onCourseDataReceived(cb) {
+  socket.on('course data received', data => cb(data));
+}
+
 function Header(props) {
   let title = props.value;
   let className1 = "nav_item";
@@ -135,5 +143,7 @@ export {
     Footer,
     login,
     onLoginError,
-    onCourseReceived
+    onCourseReceived,
+    onCourseDataReceived,
+    requestCourseData
 }

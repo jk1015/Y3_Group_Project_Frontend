@@ -4,7 +4,9 @@ import {
   Footer,
   login,
   onLoginError,
-  onCourseReceived
+  onCourseReceived,
+  onCourseDataReceived,
+  requestCourseData
 } from './api';
 
 function redirectTo(url) {
@@ -58,6 +60,10 @@ class Join extends Component {
     onLoginError(message => {
       this.setState({error: message});
     });
+
+    onCourseDataReceived(data => {
+      alert(data);
+    });
   }
 
   redirectToRoom() {
@@ -104,6 +110,10 @@ class Join extends Component {
     window.location.href = url;
   }
 
+  getCourseTimes(course) {
+    requestCourseData(course);
+  }
+
   render()
     {
       var loginBox;
@@ -134,6 +144,9 @@ class Join extends Component {
       var courseList = this.state.courses.map((course) =>
       <p>{course}</p>);
 
+      var allCourseButtons = this.state.courses.map((course) =>
+      <button type="button" onClick={()=>this.getCourseTimes(course)}>{course}</button>);
+
       var courseButton = null;
       if (this.state.currentcourse != null) {
         courseButton =
@@ -157,7 +170,7 @@ class Join extends Component {
         <div>
         {courseButton}
         <h2>Courses:</h2>
-        {courseList}
+        {this.state.isLecturer ? allCourseButtons : courseList}
         </div>
       }
 
