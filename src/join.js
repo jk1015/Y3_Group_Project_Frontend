@@ -28,7 +28,8 @@ class Join extends Component {
       isLecturer : false,
       loggedIn : false,
       displayName : "",
-      login : ""
+      login : "",
+      courseData : null
     }
 
     this.updateRoomField = this.updateRoomField.bind(this);
@@ -62,7 +63,9 @@ class Join extends Component {
     });
 
     onCourseDataReceived(data => {
-      alert(data);
+      console.log(data);
+      this.setState({courseData : data});
+      console.log(this.getAllLectureTimes(data.events));
     });
   }
 
@@ -112,6 +115,30 @@ class Join extends Component {
 
   getCourseTimes(course) {
     requestCourseData(course);
+  }
+
+  getAllLectureTimes(events) {
+    let startDate = new Date(2018, 6, 2);
+    let workingDate = new Date(startDate);
+    let sessions = events.length;
+    let dates = []
+    for (let i = 0; i < 52; i++) {
+      for (let j = 0; j < sessions; j++) {
+        if (events[j].rawweeks[i] == 'Y') {
+          let thisDate = new Date();
+          thisDate.setDate(workingDate.getDate() + events[j].day);
+          //thisDate.setTime(events[j].starttime);
+          dates.push(thisDate);
+        };
+      };
+      workingDate.setDate(workingDate.getDate() + 7);
+    };
+    return dates;
+  }
+
+  dayNumberToString(day) {
+    let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return days[day];
   }
 
   render()
@@ -174,13 +201,21 @@ class Join extends Component {
         </div>
       }
 
+      let courseData = <p></p>;
 
+      if(this.state.courseData != null) {
+        let events = this.state.courseData.events;
+        courseData = events.map((event) =>
+        <p>{this.dayNumberToString(event.day) + ": " + event.starttime + "-" + event.endtime}</p>);
+      }
 
       return(
         <div>
           <Header value="QuestHub"/>
             {loginBox}
             {courseDisplay}
+            <p>{this.state.courseData != null ? this.state.courseData.subheading : ""}</p>
+            {courseData}
           <Footer />
         </div>
       );
