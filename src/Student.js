@@ -237,20 +237,16 @@ class Student extends Component {
 
     return (
       <div>
-        <h1>{"Room " + this.state.room}</h1>
-        <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
-        <a id="faq_button" class="hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("faq_instruction");
-          let faq_button = document.getElementById("faq_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show  &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="faq_instruction" class="display-4 my-5">How do you feel about the lecture?</h2>
+        <h6 id="logging_header">{"Room " + this.state.room + " Logged in as: " + this.state.name}</h6>
+        <br/>
+        <h3 id="question_instruction" class="display-5 my-5">Ask a question!</h3>
+        <div class="input-group container-fluid col-9 mt-5">
+          <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
+          <div class="input-group-append my-4">
+            <button class="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
+          </div>
+        </div>
+
         <div id="faq_questions" class="row">
           <br/>
           <button class="btn badge-pill btn-lg btn-outline-danger col-10 col-md-5 m-3" onClick={()=>this.ask2("I don't understand!")}>
@@ -266,39 +262,7 @@ class Student extends Component {
             Could you speed up?
           </button>
         </div>
-        <hr class="mt-5 mb-0"/>
-        <a id="question_button" class="text-primary hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("question_instruction");
-          let faq_button = document.getElementById("question_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="question_instruction" class="display-4 my-5">Ask a question of your own!</h2>
-        <div class="input-group container-fluid col-9 mt-5">
-          <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
-          <div class="input-group-append my-4">
-            <button class="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
-          </div>
-        </div>
-        <br/>
-        <hr class="mt-5 mb-0"/>
-        <a id="vote_button" class="text-primary hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("vote_instruction");
-          let faq_button = document.getElementById("vote_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="vote_instruction" class="display-4 my-5">Or you can vote on questions!</h2>
+
         <div class="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
 
