@@ -22,10 +22,12 @@ class Lecturer extends React.Component {
 
     this.state ={
         questionMap: new HashMap(),
-        settingQuestions: false,
         room: this.props.value[2],
         login: this.props.value[1],
         name: this.props.value[0],
+        settingQuestions: false,
+        setQuestionTextField: '',
+
         data: {
             labels: ["I don't understand!", "Could you give an example?", "Could you slow down?", "Could you speed up?"],
             datasets: [{
@@ -64,6 +66,8 @@ class Lecturer extends React.Component {
           }
         }
     }
+
+    this.updateSetQuestionTextField = this.updateSetQuestionTextField.bind(this);
 
     connectLecturer(this.state.room, questionMap =>{
       let map = new HashMap();
@@ -136,6 +140,13 @@ class Lecturer extends React.Component {
         });
     });
   }
+
+  updateSetQuestionTextField(e) {
+    this.setState({setQuestionTextField: e.target.value});
+  }
+
+
+
   render() {
     var questions = [];
     this.state.questionMap.keys().forEach(
@@ -169,7 +180,7 @@ class Lecturer extends React.Component {
             <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>this.setState({settingQuestions: false})}>View student feedback</button>
           </div>
           <div class="input-group container-fluid col-9 mt-5">
-            <input type="text" class="form-control my-4" placeholder="Ask your question here" value={null} onChange={null}/>
+            <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.setQuestionTextField} onChange={this.updateSetQuestionTextField}/>
             <div class="input-group-append my-4">
               <button class="btn btn-outline-dark px-4" type="button" onClick={null}>Ask!</button>
             </div>
