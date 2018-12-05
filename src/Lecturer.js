@@ -22,6 +22,7 @@ class Lecturer extends React.Component {
 
     this.state ={
         questionMap: new HashMap(),
+        settingQuestions: false,
         room: this.props.value[2],
         login: this.props.value[1],
         name: this.props.value[0],
@@ -160,6 +161,13 @@ class Lecturer extends React.Component {
       <button class="btn btn-outline-warning col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
+    if(this.state.settingQuestions) {
+      return (
+        <div id="Change page">
+          <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>this.setState({settingQuestions: false})}>View student feedback</button>
+        </div>
+      )
+    }
     return (
        <div>
          <h1>{"Room " + this.state.room}</h1>
@@ -170,7 +178,9 @@ class Lecturer extends React.Component {
          <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
-
+           <div id="Change page">
+             <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>this.setState({settingQuestions:true})}>Send a question to students</button>
+           </div>
            <a id="chart_button" class="hide_button" href="#" onClick={()=>{
              let faq_questions = document.getElementById("chart_instruction");
              let faq_button = document.getElementById("chart_button");
