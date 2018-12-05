@@ -4,6 +4,7 @@ import { Bar } from 'react-chartjs-2';
 import {
     onClearAll,
     clearAll,
+    askQuestion,
     connectLecturer,
     onQuestionReceived,
     onQuestionAnswered,
@@ -68,6 +69,7 @@ class Lecturer extends React.Component {
     }
 
     this.updateSetQuestionTextField = this.updateSetQuestionTextField.bind(this);
+    this.ask = this.ask.bind(this);
 
     connectLecturer(this.state.room, questionMap =>{
       let map = new HashMap();
@@ -145,7 +147,14 @@ class Lecturer extends React.Component {
     this.setState({setQuestionTextField: e.target.value});
   }
 
+  ask(){
+    let question = this.state.setQuestionTextField;
+    askQuestion(question, {room: this.state.room,
+      login: this.state.login,
+      name: this.state.name});
 
+    this.setState({setQuestionTextField: ''});
+  }
 
   render() {
     var questions = [];
@@ -182,7 +191,7 @@ class Lecturer extends React.Component {
           <div class="input-group container-fluid col-9 mt-5">
             <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.setQuestionTextField} onChange={this.updateSetQuestionTextField}/>
             <div class="input-group-append my-4">
-              <button class="btn btn-outline-dark px-4" type="button" onClick={null}>Ask!</button>
+              <button class="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
             </div>
           </div>
         </div>
