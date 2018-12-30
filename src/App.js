@@ -19,7 +19,7 @@ class App extends Component {
           <div className="App">
 
           <Route exact path='/'
-                render={() => <SelectIdentity/>}
+                render={() => <Join/>}
               />
 
           <Route exact path='/room'

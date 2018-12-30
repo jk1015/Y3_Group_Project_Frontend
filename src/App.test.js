@@ -12,12 +12,7 @@ configure({ adapter: new Adapter() });
 describe('<Join />', () => {
   it('renders join inputs', () => {
     const join_area = shallow(<Join />);
-    expect(join_area.find('input').length).toEqual(3);
-  });
-
-  it('renders join box', () => {
-    const join_area = shallow(<Join />);
-    expect(join_area.find('div#Question_box').length).toEqual(1);
+    expect(join_area.find('input').length).toEqual(2);
   });
 
   it('renders header', () => {
@@ -32,7 +27,7 @@ describe('<Join />', () => {
 
   it('renders forms', () => {
     const join_area = shallow(<Join />);
-    expect(join_area.find('form').length).toEqual(2);
+    expect(join_area.find('form').length).toEqual(1);
   });
 
 });
