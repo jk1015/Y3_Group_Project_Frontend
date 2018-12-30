@@ -135,6 +135,30 @@ class Lecturer extends React.Component {
         });
     });
   }
+
+  componentDidMount(){
+
+    fetch('http://localhost:8080/data/' + this.state.room, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        //date?
+      })
+    })
+    .then(res =>{
+      return res.json();
+    })
+    .then(data =>{
+      console.log(data);
+    })
+    .catch((err) => {
+      //Error
+    })
+
+  }
+
   render() {
     var questions = [];
     this.state.questionMap.keys().forEach(
@@ -171,7 +195,7 @@ class Lecturer extends React.Component {
          <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
          <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
 
-           <a id="chart_button" class="hide_button" href="#" onClick={()=>{
+           <a id="chart_button" className="hide_button" href="#" onClick={()=>{
              let faq_questions = document.getElementById("chart_instruction");
              let faq_button = document.getElementById("chart_button");
              if (faq_questions.style.display === "none") {
@@ -182,15 +206,15 @@ class Lecturer extends React.Component {
                faq_button.innerHTML = "show  &#9662;";
              }
            }}>hide &#9652;</a>
-           <h2 id="chart_instruction" class="display-4 my-5">Students now feel...</h2>
-           <div class="container my-3">
+           <h2 id="chart_instruction" className="display-4 my-5">Students now feel...</h2>
+           <div className="container my-3">
              <Bar
                data={this.state.data}
                options={this.state.options}
              />
            </div>
-           <hr class="mt-5 mb-0"/>
-           <a id="studentQuestions_button" class="hide_button" href="#" onClick={()=>{
+           <hr className="mt-5 mb-0"/>
+           <a id="studentQuestions_button" className="hide_button" href="#" onClick={()=>{
              let faq_questions = document.getElementById("studentQuestions_instruction");
              let faq_button = document.getElementById("studentQuestions_button");
              if (faq_questions.style.display === "none") {
@@ -201,8 +225,8 @@ class Lecturer extends React.Component {
                faq_button.innerHTML = "show  &#9662;";
              }
            }}>hide &#9652;</a>
-           <h2 id="studentQuestions_instruction" class="display-4 my-5">Questions asked by students are here!</h2>
-           <div class="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
+           <h2 id="studentQuestions_instruction" className="display-4 my-5">Questions asked by students are here!</h2>
+           <div className="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
            <div id="Clear">
              <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
            </div>
