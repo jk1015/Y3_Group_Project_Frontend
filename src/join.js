@@ -6,10 +6,17 @@ import {
   onLoginError,
   onCourseReceived,
   onCourseDataReceived,
-  requestCourseData
+  requestCourseData,
+  relogin
 } from './api';
+import { ClipLoader } from 'react-spinners';
 
-function redirectTo(url) {
+const cookieHandler = require('./CookieHandler');
+
+function redirectTo(url, logout) {
+  if(logout){
+    cookieHandler.setCookie('auth', '');
+  }
   window.location.href = url;
 }
 
@@ -18,27 +25,39 @@ class Join extends Component {
   constructor(props) {
     super(props);
 
+    const credentials = cookieHandler.getCookie("auth");
+
     this.state = {
       roomName : "",
       user : "",
       password : "",
       courses : [],
-      currentcourse : null,
+      currentcourse : undefined,
       error: undefined,
       isLecturer : false,
       loggedIn : false,
       displayName : "",
       login : "",
-      courseData : null
+      courseData : null,
+      loading: (credentials !== undefined && credentials !== '') ? true : false
     }
 
     this.updateRoomField = this.updateRoomField.bind(this);
     this.updateUserField = this.updateUserField.bind(this);
     this.updatePasswordField = this.updatePasswordField.bind(this);
     this.redirectToRoom = this.redirectToRoom.bind(this);
+    this.loginUser = this.loginUser.bind(this);
+
+    if(credentials !== undefined && credentials !== ''){
+      relogin(credentials);
+    }
 
     onCourseReceived(course => {
-      console.log(course);
+      this.setState({loading: false});
+
+      const credentials = this.state.user + ':' + this.state.password;
+      cookieHandler.setCookie('auth', 'Basic ' + btoa(credentials), 30);
+
       let isLecturer = false;
       if (course.doc_user == "lecturer") {
         isLecturer = true;
@@ -55,28 +74,25 @@ class Join extends Component {
         this.redirectToRoom();
       }
 
-
     });
 
     onLoginError(message => {
-      this.setState({error: message});
+      this.setState({error: message, loading: false});
     });
 
     onCourseDataReceived(data => {
-      console.log(data);
+      // console.log(data);
       this.setState({courseData : data});
-      console.log(this.getAllLectureTimes(data.events));
+      // console.log(this.getAllLectureTimes(data.events));
     });
   }
 
   redirectToRoom() {
-    if(this.state.currentcourse !== null){
+    if(this.state.currentcourse !== undefined){
       if (!this.state.isLecturer) {
-        redirectTo('/student/' + this.state.displayName + "/" + this.state.login +
-          "/" + this.state.currentcourse);
+        redirectTo('/student/' + this.state.currentcourse);
       } else {
-        redirectTo('/lecturer/' + this.state.displayName + "/" + this.state.login +
-          "/" + this.state.currentcourse)
+        redirectTo('/lecturer/' + this.state.currentcourse)
       }
     } else {
       this.setState({error: 'No lecture for any course now'});
@@ -95,7 +111,8 @@ class Join extends Component {
     this.setState({password: e.target.value});
   }
 
-  loginUser() {
+  loginUser(event) {
+    event.preventDefault();
     this.setState({error: undefined});
 
     let user = this.state.user;
@@ -141,21 +158,21 @@ class Join extends Component {
     return days[day];
   }
 
-  render()
-    {
-      var loginBox;
+  render(){
+
+      let loginBox;
       if (!this.state.loggedIn) {
         loginBox =
         <div>
         <h2>Login</h2>
-        <form id="Login">
+        <form id="Login" onSubmit={this.loginUser}>
           <h3>Username</h3>
             <input type="text" value={this.state.user}
               onChange={this.updateUserField}/>
           <h3>Password</h3>
             <input type="password" value={this.state.password}
               onChange={this.updatePasswordField}/>
-          <button type="button" onClick={()=>this.loginUser()}>Login</button>
+          <button type="submit">Login</button>
         </form>
         <p>{this.state.error}</p>
         </div>
@@ -164,18 +181,21 @@ class Join extends Component {
         <div>
         <p>Logged in as: {this.state.displayName}</p>
         <p>Type: {this.state.isLecturer ? "Lecturer" : "Student"}</p>
-        <button type="button" onClick={()=>redirectTo('')}>Logout</button>
+        <button type="button" onClick={()=>redirectTo('', true)}>Logout</button>
         </div>
       }
 
-      var courseList = this.state.courses.map((course) =>
-      <p>{course}</p>);
+      let courseList, allCourseButtons;
+      if(this.state.courses){
+        courseList = this.state.courses.map((course) =>
+          <p>{course}</p>);
 
-      var allCourseButtons = this.state.courses.map((course) =>
-      <button type="button" onClick={()=>this.getCourseTimes(course)}>{course}</button>);
+        allCourseButtons = this.state.courses.map((course) =>
+          <button type="button" onClick={()=>this.getCourseTimes(course)}>{course}</button>);
+      }
 
       var courseButton = null;
-      if (this.state.currentcourse != null) {
+      if (this.state.currentcourse !== undefined) {
         courseButton =
         <div>
           <h2>Lecture in progress:</h2>
@@ -192,7 +212,7 @@ class Join extends Component {
       }
 
       var courseDisplay = null;
-      if (this.state.courses.length > 0) {
+      if (this.state.courses && this.state.courses.length > 0) {
         courseDisplay =
         <div>
         {courseButton}
@@ -209,14 +229,30 @@ class Join extends Component {
         <p>{this.dayNumberToString(event.day) + ": " + event.starttime + "-" + event.endtime}</p>);
       }
 
+      let mainView;
+      if(!this.state.loading){
+        mainView = <div>
+          {loginBox}
+          {courseDisplay}
+          <p>{this.state.courseData != null ? this.state.courseData.subheading : ""}</p>
+          {courseData}
+        </div>
+      }
+
       return(
         <div>
-          <Header value="QuestHub"/>
-            {loginBox}
-            {courseDisplay}
-            <p>{this.state.courseData != null ? this.state.courseData.subheading : ""}</p>
-            {courseData}
-          <Footer />
+          {/* <Header value="QuestHub"/> */}
+
+            {mainView}
+            <ClipLoader
+               // className={override}
+               sizeUnit={"px"}
+               size={50}
+               color={'#0336FF'}
+               loading={this.state.loading}
+             />
+
+          {/* <Footer /> */}
         </div>
       );
     }

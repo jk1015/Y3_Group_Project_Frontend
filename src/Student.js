@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
+import { ClipLoader } from 'react-spinners';
 
 import { askQuestion,
   onClearAll,
-  connectLecturer,
+  connectToRoom,
   onQuestionAnswered,
   stopAsking,
   onQuestionReceived,
   onDisconnect,
   Header,
-  Footer
+  Footer,
+  onJoinError,
+  onRelogin
 } from './api';
 
 //var student_page = require('./student.html.js');
-var HtmlToReactParser = require('html-to-react').Parser;
-var htmlToReactParser = new HtmlToReactParser();
+const HtmlToReactParser = require('html-to-react').Parser;
+const htmlToReactParser = new HtmlToReactParser();
 const HashMap = require('hashmap');
+const cookieHandler = require('./CookieHandler');
 
 var html_page =
       '<script src="/socket.io/socket.io.js"></script>' +
@@ -80,33 +84,45 @@ class Student extends Component {
 
   constructor(props) {
     super(props);
+    const credentials = cookieHandler.getCookie("auth");
 
     this.state = {
        data: '',
        questionMap: new HashMap(),
        myQuestions: new HashMap(), //[], // [{'quesion', id}]
-       room: props.value[2],
-       login: props.value[1],
-       name: props.value[0]
+       room: props.room,
+       login: undefined,
+       name: undefined,
+       credentials: credentials,
+       errorMessage: undefined,
+       loading: (credentials !== undefined && credentials !== '') ? true : false
     }
 
     this.updateQuestionField = this.updateQuestionField.bind(this);
     this.ask = this.ask.bind(this);
     this.removeAsk = this.removeAsk.bind(this);
 
-    connectLecturer(this.state.room, questionMap =>{
-      let map = new HashMap();
-      let map2 = new HashMap();
-      map.copy(questionMap)
-      let keys = map.keys();
-      for (var i = 0; i < keys.length; i++) {
-        let key = keys[i];
-        let val = map.get(key).count;
-        map2.set(key, val);
-      }
-      this.setState({
-          questionMap: map2
-      })
+    if(credentials !== undefined && credentials !== ''){
+      connectToRoom(credentials, this.state.room, "student", questionMap =>{
+
+        let map = new HashMap();
+        let map2 = new HashMap();
+        map.copy(questionMap)
+        let keys = map.keys();
+        for (var i = 0; i < keys.length; i++) {
+          let key = keys[i];
+          let val = map.get(key).count;
+          map2.set(key, val);
+        }
+        this.setState({
+          questionMap: map2,
+          loading: false
+        })
+      });
+    }
+
+    onJoinError((error) => {
+      this.setState({errorMessage: error, loading: false});
     });
 
     onQuestionReceived(questionTally => {
@@ -134,6 +150,13 @@ class Student extends Component {
           myQuestions: myQuestions
       })
     });
+
+    onRelogin((user) => {
+      this.setState({
+        login: user.login,
+        name: user.displayName,
+      })
+    })
 
     onClearAll(() => {
       this.setState({
@@ -177,8 +200,9 @@ class Student extends Component {
         login: this.state.login,
         name: this.state.name});
 
-      this.state.myQuestions.set(question, '');
-
+      let temp = this.state.myQuestions;
+      temp.set(question, '');
+      this.setState({myQuestions: temp});
     }
   }
 
@@ -206,9 +230,13 @@ class Student extends Component {
     // TODO: duplicate array?
   }
 
+  logout(){
+    cookieHandler.setCookie('auth', '');
+    window.location.href = '/';
+  }
+
   render() {
     var questions = [];
-    console.log(this.state.myQuestions);
 
     this.state.questionMap.keys().forEach(
       function(key) {
@@ -234,12 +262,17 @@ class Student extends Component {
       </div>
     );
 
+    let mainView;
 
-    return (
-      <div>
-        <h1>{"Room " + this.state.room}</h1>
+    if(this.state.credentials && this.state.credentials !== ""
+      && !this.state.loading && !this.state.errorMessage){
+
+      mainView = <div>
+        <div>
+          <button onClick={() => this.logout()}>Logout</button>
+        </div>
         <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
-        <a id="faq_button" class="hide_button" href="#" onClick={()=>{
+        <a id="faq_button" className="hide_button" href="#" onClick={()=>{
           let faq_questions = document.getElementById("faq_instruction");
           let faq_button = document.getElementById("faq_button");
           if (faq_questions.style.display === "none") {
@@ -250,24 +283,24 @@ class Student extends Component {
             faq_button.innerHTML = "show  &#9662;";
           }
         }}>hide &#9652;</a>
-        <h2 id="faq_instruction" class="display-4 my-5">How do you feel about the lecture?</h2>
-        <div id="faq_questions" class="row">
+        <h2 id="faq_instruction" className="display-4 my-5">How do you feel about the lecture?</h2>
+        <div id="faq_questions" className="row">
           <br/>
-          <button class="btn badge-pill btn-lg btn-outline-danger col-10 col-md-5 m-3" onClick={()=>this.ask2("I don't understand!")}>
+          <button className="btn badge-pill btn-lg btn-outline-danger col-10 col-md-5 m-3" onClick={()=>this.ask2("I don't understand!")}>
             I don&#39;t understand!
           </button>
-          <button class="btn badge-pill btn-lg btn-outline-warning col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you give an example?")}>
+          <button className="btn badge-pill btn-lg btn-outline-warning col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you give an example?")}>
             Could you give an example?
           </button>
-          <button class="btn badge-pill btn-lg btn-outline-primary col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you slow down?")}>
+          <button className="btn badge-pill btn-lg btn-outline-primary col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you slow down?")}>
             Could you slow down?
           </button>
-          <button class="btn badge-pill btn-lg btn-outline-success col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you speed up?")}>
+          <button className="btn badge-pill btn-lg btn-outline-success col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you speed up?")}>
             Could you speed up?
           </button>
         </div>
-        <hr class="mt-5 mb-0"/>
-        <a id="question_button" class="text-primary hide_button" href="#" onClick={()=>{
+        <hr className="mt-5 mb-0"/>
+        <a id="question_button" className="text-primary hide_button" href="#" onClick={()=>{
           let faq_questions = document.getElementById("question_instruction");
           let faq_button = document.getElementById("question_button");
           if (faq_questions.style.display === "none") {
@@ -278,16 +311,16 @@ class Student extends Component {
             faq_button.innerHTML = "show &#9662;";
           }
         }}>hide &#9652;</a>
-        <h2 id="question_instruction" class="display-4 my-5">Ask a question of your own!</h2>
-        <div class="input-group container-fluid col-9 mt-5">
-          <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
-          <div class="input-group-append my-4">
-            <button class="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
+        <h2 id="question_instruction" className="display-4 my-5">Ask a question of your own!</h2>
+        <div className="input-group container-fluid col-9 mt-5">
+          <input type="text" className="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
+          <div className="input-group-append my-4">
+            <button className="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
           </div>
         </div>
         <br/>
-        <hr class="mt-5 mb-0"/>
-        <a id="vote_button" class="text-primary hide_button" href="#" onClick={()=>{
+        <hr className="mt-5 mb-0"/>
+        <a id="vote_button" className="text-primary hide_button" href="#" onClick={()=>{
           let faq_questions = document.getElementById("vote_instruction");
           let faq_button = document.getElementById("vote_button");
           if (faq_questions.style.display === "none") {
@@ -298,9 +331,44 @@ class Student extends Component {
             faq_button.innerHTML = "show &#9662;";
           }
         }}>hide &#9652;</a>
-        <h2 id="vote_instruction" class="display-4 my-5">Or you can vote on questions!</h2>
-        <div class="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
+        <h2 id="vote_instruction" className="display-4 my-5">Or you can vote on questions!</h2>
+        <div className="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
         {/* <Questions value={this.state.questions} /> */}
+      </div>
+    }
+
+    return (
+      <div>
+        <h1>{"Room " + this.state.room}</h1>
+
+        {mainView}
+        {this.state.errorMessage ?
+          <div>
+            <p>{this.state.errorMessage}</p>
+            <a href="/">
+              <button>Back</button>
+            </a>
+          </div>
+          : undefined
+        }
+
+        {(this.state.credentials === undefined || this.state.credentials === '')?
+          <div>
+            <p>You have to login first</p>
+            <a href="/">
+              <button>Login</button>
+            </a>
+          </div>
+          : undefined
+        }
+
+        <ClipLoader
+           // className={override}
+           sizeUnit={"px"}
+           size={50}
+           color={'#0336FF'}
+           loading={this.state.loading}
+         />
 
       </div>
     );

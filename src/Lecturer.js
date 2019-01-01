@@ -1,30 +1,39 @@
 import React, { Component } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { ClipLoader } from 'react-spinners';
 
 import {
     onClearAll,
     clearAll,
-    connectLecturer,
+    connectToRoom,
     onQuestionReceived,
     onQuestionAnswered,
     answerQuestion,
     joinRoom,
     Header,
-    Footer
+    Footer,
+    onJoinError,
+    onRelogin
 } from './api';
 
 const HashMap = require('hashmap');
+const cookieHandler = require('./CookieHandler');
 
 class Lecturer extends React.Component {
 
   constructor(props) {
     super(props);
+    const credentials = cookieHandler.getCookie("auth");
 
     this.state ={
         questionMap: new HashMap(),
-        room: this.props.value[2],
-        login: this.props.value[1],
-        name: this.props.value[0],
+        room: props.room,
+        login: undefined,
+        name: undefined,
+        credentials: credentials,
+        errorMessage: undefined,
+        loading: (credentials !== undefined && credentials !== '') ? true : false,
+
         data: {
             labels: ["I don't understand!", "Could you give an example?", "Could you slow down?", "Could you speed up?"],
             datasets: [{
@@ -64,22 +73,36 @@ class Lecturer extends React.Component {
         }
     }
 
-    connectLecturer(this.state.room, questionMap =>{
-      let map = new HashMap();
-      map.copy(questionMap);
-      var dataNew=this.state.data;
-      dataNew.datasets[0].data=[
-        map.get("I don't understand!") ? map.get("I don't understand!").count : null,
-        map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
-        map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
-        map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
-      this.setState({
-          questionMap: map,
-          room: this.state.room,
-          data: dataNew,
-          options: this.state.options
-      })
+    if(credentials !== undefined && credentials !== ''){
+      connectToRoom(credentials, this.state.room, "lecturer", questionMap =>{
+        let map = new HashMap();
+        map.copy(questionMap);
+        var dataNew=this.state.data;
+        dataNew.datasets[0].data=[
+          map.get("I don't understand!") ? map.get("I don't understand!").count : null,
+          map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
+          map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
+          map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
+        this.setState({
+            questionMap: map,
+            room: this.state.room,
+            data: dataNew,
+            options: this.state.options,
+            loading: false
+        })
+      });
+    }
+
+    onJoinError((error) => {
+      this.setState({errorMessage: error, loading: false});
     });
+
+    onRelogin((user) => {
+      this.setState({
+        login: user.login,
+        name: user.displayName,
+      })
+    })
 
     onQuestionReceived(questionTally => {
         let map = this.state.questionMap;
@@ -159,6 +182,11 @@ class Lecturer extends React.Component {
 
   }
 
+  logout(){
+    cookieHandler.setCookie('auth', '');
+    window.location.href = '/';
+  }
+
   render() {
     var questions = [];
     this.state.questionMap.keys().forEach(
@@ -184,53 +212,99 @@ class Lecturer extends React.Component {
       <button class="btn btn-outline-warning col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
       </div>
     );
+
+    let mainView;
+
+    if(this.state.credentials && this.state.credentials !== ""
+      && !this.state.loading && !this.state.errorMessage){
+
+      mainView = <div>
+        <div>
+          <button onClick={() => this.logout()}>Logout</button>
+        </div>
+        <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
+
+        {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
+
+        <p className="DontUnderstandText">Number of students who don&#39;t understand: {this.state.questionMap.get("I don't understand")}</p>
+        <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
+        <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
+        <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
+
+        <a id="chart_button" className="hide_button" href="#" onClick={()=>{
+          let faq_questions = document.getElementById("chart_instruction");
+          let faq_button = document.getElementById("chart_button");
+          if (faq_questions.style.display === "none") {
+            faq_questions.style.display = "block";
+            faq_button.innerHTML = "hide &#9652;";
+          } else {
+            faq_questions.style.display = "none";
+            faq_button.innerHTML = "show  &#9662;";
+          }
+        }}>hide &#9652;</a>
+        <h2 id="chart_instruction" className="display-4 my-5">Students now feel...</h2>
+        <div className="container my-3">
+          <Bar
+            data={this.state.data}
+            options={this.state.options}
+          />
+        </div>
+        <hr className="mt-5 mb-0"/>
+        <a id="studentQuestions_button" className="hide_button" href="#" onClick={()=>{
+          let faq_questions = document.getElementById("studentQuestions_instruction");
+          let faq_button = document.getElementById("studentQuestions_button");
+          if (faq_questions.style.display === "none") {
+            faq_questions.style.display = "block";
+            faq_button.innerHTML = "hide &#9652;";
+          } else {
+            faq_questions.style.display = "none";
+            faq_button.innerHTML = "show  &#9662;";
+          }
+        }}>hide &#9652;</a>
+        <h2 id="studentQuestions_instruction" className="display-4 my-5">Questions asked by students are here!</h2>
+        <div className="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
+        <div id="Clear">
+          <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
+        </div>
+
+      </div>
+    }
+
+
     return (
-       <div>
-         <h1>{"Room " + this.state.room}</h1>
-         <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
-         {/* <p className="DontUnderstandText">Number of students who don't understand: {this.state.questionMap.get("I don't understand")}</p>
+      <div>
+        <h1>{"Room " + this.state.room}</h1>
 
-         <p className="DontUnderstandText">Number of students who don&#39;t understand: {this.state.questionMap.get("I don't understand")}</p>
-         <p className="ExampleText">Number of students who want an example: {this.state.questionMap.get("Could you give an example?")}</p>
-         <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
-         <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
+        {mainView}
+        {this.state.errorMessage ?
+          <div>
+            <p>{this.state.errorMessage}</p>
+            <a href="/">
+              <button>Back</button>
+            </a>
+          </div>
+          : undefined
+        }
 
-           <a id="chart_button" className="hide_button" href="#" onClick={()=>{
-             let faq_questions = document.getElementById("chart_instruction");
-             let faq_button = document.getElementById("chart_button");
-             if (faq_questions.style.display === "none") {
-               faq_questions.style.display = "block";
-               faq_button.innerHTML = "hide &#9652;";
-             } else {
-               faq_questions.style.display = "none";
-               faq_button.innerHTML = "show  &#9662;";
-             }
-           }}>hide &#9652;</a>
-           <h2 id="chart_instruction" className="display-4 my-5">Students now feel...</h2>
-           <div className="container my-3">
-             <Bar
-               data={this.state.data}
-               options={this.state.options}
-             />
-           </div>
-           <hr className="mt-5 mb-0"/>
-           <a id="studentQuestions_button" className="hide_button" href="#" onClick={()=>{
-             let faq_questions = document.getElementById("studentQuestions_instruction");
-             let faq_button = document.getElementById("studentQuestions_button");
-             if (faq_questions.style.display === "none") {
-               faq_questions.style.display = "block";
-               faq_button.innerHTML = "hide &#9652;";
-             } else {
-               faq_questions.style.display = "none";
-               faq_button.innerHTML = "show  &#9662;";
-             }
-           }}>hide &#9652;</a>
-           <h2 id="studentQuestions_instruction" className="display-4 my-5">Questions asked by students are here!</h2>
-           <div className="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
-           <div id="Clear">
-             <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
-           </div>
-         </div>
+        {(this.state.credentials === undefined || this.state.credentials === '')?
+          <div>
+            <p>You have to login first</p>
+            <a href="/">
+              <button>Login</button>
+            </a>
+          </div>
+          : undefined
+        }
+
+        <ClipLoader
+           // className={override}
+           sizeUnit={"px"}
+           size={50}
+           color={'#0336FF'}
+           loading={this.state.loading}
+         />
+
+      </div>
     );
   }
 }
