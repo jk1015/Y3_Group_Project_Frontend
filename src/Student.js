@@ -264,7 +264,6 @@ class Student extends Component {
 
     let mainView;
 
-<<<<<<< HEAD
     return (
       <div>
         <h6 id="logging_header">{"Room " + this.state.room + " Logged in as: " + this.state.name}</h6>
@@ -278,7 +277,6 @@ class Student extends Component {
         </div>
 
         <div id="faq_questions" class="row">
-=======
     if(this.state.credentials && this.state.credentials !== ""
       && !this.state.loading && !this.state.errorMessage){
 
@@ -300,7 +298,6 @@ class Student extends Component {
         }}>hide &#9652;</a>
         <h2 id="faq_instruction" className="display-4 my-5">How do you feel about the lecture?</h2>
         <div id="faq_questions" className="row">
->>>>>>> master
           <br/>
           <button className="btn badge-pill btn-lg btn-outline-danger col-10 col-md-5 m-3" onClick={()=>this.ask2("I don't understand!")}>
             I don&#39;t understand!
@@ -385,8 +382,10 @@ class Student extends Component {
            color={'#0336FF'}
            loading={this.state.loading}
          />
-
       </div>
+      </div>
+      </div>
+
     );
   }
 }

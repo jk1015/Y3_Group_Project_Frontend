@@ -5,12 +5,9 @@ import { ClipLoader } from 'react-spinners';
 import {
     onClearAll,
     clearAll,
-<<<<<<< HEAD
     askQuestion,
     connectLecturer,
-=======
     connectToRoom,
->>>>>>> master
     onQuestionReceived,
     onQuestionAnswered,
     answerQuestion,
@@ -32,20 +29,14 @@ class Lecturer extends React.Component {
 
     this.state ={
         questionMap: new HashMap(),
-<<<<<<< HEAD
-        room: this.props.value[2],
-        login: this.props.value[1],
-        name: this.props.value[0],
         settingQuestions: false,
         setQuestionTextField: '',
-=======
         room: props.room,
         login: undefined,
         name: undefined,
         credentials: credentials,
         errorMessage: undefined,
         loading: (credentials !== undefined && credentials !== '') ? true : false,
->>>>>>> master
 
         data: {
             labels: ["I don't understand!", "Could you give an example?", "Could you slow down?", "Could you speed up?"],
