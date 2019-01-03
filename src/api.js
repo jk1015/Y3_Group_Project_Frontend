@@ -4,11 +4,11 @@ import React, { Component } from 'react';
 //NOTE: Don't deploy to heroku! LDAP access can only be done whilst in DoC!
 //const socket = openSocket('group26-backend.herokuapp.com');
 
-//const socket = openSocket('http://cloud-vm-45-130.doc.ic.ac.uk:8080/')
+// const socket = openSocket('http://cloud-vm-45-130.doc.ic.ac.uk:8080/')
 const socket = openSocket('http://localhost:8080');
 
-function joinRoom(room) {
-    socket.emit("join room", room);
+function joinRoom(credentials, room, userType) {
+    socket.emit("join room", credentials, room, userType);
 }
 
 function onDisconnect(questions, room) {
@@ -23,14 +23,25 @@ function onQuestionReceived(cb) {
    socket.on('question received', questionTally => cb(questionTally));
 }
 
-function connectLecturer(room, cb) {
-    joinRoom(room);
-    socket.on('on lecturer connect', questionMap => cb(questionMap));
-    socket.emit('lecturer connect', room);
+function connectToRoom(credentials, room, userType, cb) {
+    joinRoom(credentials, room, userType);
+    socket.on('on rooms lists', lists => {
+      console.log("in");
+      socket.on('on lecturer connect', questionMap => cb(questionMap));
+      socket.emit('lecturer connect', room);
+    });
 }
 
 function onClearAll(cb) {
     socket.on('on clear all', () => cb());
+}
+
+function onJoinError(cb) {
+    socket.on('on join error', error => cb(error));
+}
+
+function onRelogin(cb) {
+    socket.on('on relogin', user => cb(user));
 }
 
 function clearAll(room) {
@@ -59,6 +70,10 @@ function stopAsking(question, room) {
 
 function login(username, password) {
   socket.emit('login', username, password);
+}
+
+function relogin(credentials) {
+  socket.emit('relogin', credentials);
 }
 
 function onCourseReceived(cb) {
@@ -133,7 +148,7 @@ export {
     clearAll,
     askQuestion,
     onQuestionReceived,
-    connectLecturer,
+    connectToRoom,
     answerQuestion,
     onQuestionAnswered,
     stopAsking,
@@ -145,5 +160,8 @@ export {
     onLoginError,
     onCourseReceived,
     onCourseDataReceived,
-    requestCourseData
+    requestCourseData,
+    onJoinError,
+    onRelogin,
+    relogin
 }
