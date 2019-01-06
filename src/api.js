@@ -20,7 +20,7 @@ function askQuestion(question, user) {
 }
 
 function onQuestionReceived(cb) {
-   socket.on('question received', questionTally => cb(questionTally));
+   socket.on('question received', received_question => cb(received_question));
 }
 
 function connectToRoom(credentials, room, userType, cb) {

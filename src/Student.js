@@ -125,12 +125,12 @@ class Student extends Component {
       this.setState({errorMessage: error, loading: false});
     });
 
-    onQuestionReceived(questionTally => {
+    onQuestionReceived(received_question => {
       let map = this.state.questionMap;
-      if(questionTally.data == null || questionTally.data.count <= 0) {
-          map.delete(questionTally.question);
+      if(received_question.data == null || received_question.data.count <= 0) {
+          map.delete(received_question.question);
       } else {
-          map.set(questionTally.question, questionTally.data.count);
+          map.set(received_question.question, received_question.data.count);
       }
 
       this.setState({
@@ -138,11 +138,11 @@ class Student extends Component {
       });
 
       let myQuestions = this.state.myQuestions;
-      if (questionTally.user === props.value[1]) {
-        if (questionTally.data == null || questionTally.data.count <= 0) {
-            myQuestions.delete(questionTally.question)
+      if (received_question.user === this.state.login) {
+        if (received_question.data == null || received_question.data.count <= 0) {
+            myQuestions.delete(received_question.question)
         } else {
-            myQuestions.set(questionTally.question, questionTally.question_id.id);
+            myQuestions.set(received_question.question, received_question.question_id.id);
         }
       }
 

@@ -55,8 +55,8 @@ class Join extends Component {
     onCourseReceived(course => {
       this.setState({loading: false});
 
-      const credentials = this.state.user + ':' + this.state.password;
-      cookieHandler.setCookie('auth', 'Basic ' + btoa(credentials), 30);
+      if(course && course.token)
+        cookieHandler.setCookie('auth', course.token, 30);
 
       let isLecturer = false;
       if (course.doc_user == "lecturer") {
