@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 //NOTE: Don't deploy to heroku! LDAP access can only be done whilst in DoC!
 //const socket = openSocket('group26-backend.herokuapp.com');
 
-// const socket = openSocket('http://cloud-vm-45-130.doc.ic.ac.uk:8080/')
+//const socket = openSocket('http://cloud-vm-45-130.doc.ic.ac.uk:8080/')
 const socket = openSocket('http://localhost:8080');
 
 function joinRoom(credentials, room, userType) {
@@ -20,7 +20,7 @@ function askQuestion(question, user) {
 }
 
 function onQuestionReceived(cb) {
-   socket.on('question received', questionTally => cb(questionTally));
+   socket.on('question received', received_question => cb(received_question));
 }
 
 function connectToRoom(credentials, room, userType, cb) {
