@@ -37,6 +37,7 @@ code {
     }
 }
 
+
 #header {
   background-color: #3b231e;
   width: 100%;
@@ -106,6 +107,7 @@ code {
 #faq_questions {
   font-size: 0.7em;
   display: block;
+  margin: 0;
 }
 
 .hide_button {
@@ -166,6 +168,7 @@ code {
   margin-left: 25px;
   margin-right: 25px;
 }
+
 
 .question {
   margin-left: auto;

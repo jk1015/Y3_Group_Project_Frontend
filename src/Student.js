@@ -4,7 +4,8 @@ import { ClipLoader } from 'react-spinners';
 import { askQuestion,
   onClearAll,
   connectToRoom,
-  onQuestionAnswered,
+  onStudentQuestionAnswered,
+  answerLecturerQuestion,
   stopAsking,
   onQuestionReceived,
   onDisconnect,
@@ -54,6 +55,7 @@ var header =
 //   console.log(q);
 // }
 
+
 function makeQuestion(question) {
   return '<div class="question">' +
            '<p>' + question + '</p>' +
@@ -88,7 +90,9 @@ class Student extends Component {
 
     this.state = {
        data: '',
-       questionMap: new HashMap(),
+       studentQuestionMap: new HashMap(),
+       lecturerQuestionMap: new HashMap(),
+       view: "main",
        myQuestions: new HashMap(), //[], // [{'quesion', id}]
        room: props.room,
        login: undefined,
@@ -100,22 +104,32 @@ class Student extends Component {
 
     this.updateQuestionField = this.updateQuestionField.bind(this);
     this.ask = this.ask.bind(this);
+    this.answer = this.answer.bind(this);
+    this.render_question = this.render_question.bind(this);
     this.removeAsk = this.removeAsk.bind(this);
 
     if(credentials !== undefined && credentials !== ''){
-      connectToRoom(credentials, this.state.room, "student", questionMap =>{
+      connectToRoom(credentials, this.state.room, "student", questionMaps =>{
 
         let map = new HashMap();
         let map2 = new HashMap();
-        map.copy(questionMap)
+        map.copy(questionMaps.sqm);
+        map2.copy(questionMaps.lqm);
         let keys = map.keys();
         for (var i = 0; i < keys.length; i++) {
           let key = keys[i];
           let val = map.get(key).count;
+          map.set(key, val);
+        }
+        let keys2 = map2.keys();
+        for (var i = 0; i < keys2.length; i++) {
+          let key = keys2[i];
+          let val = {question: key, type: map2.get(key).type, options: map2.get(key).options};
           map2.set(key, val);
         }
         this.setState({
-          questionMap: map2,
+          studentQuestionMap: map,
+          lecturerQuestionMap: map2,
           loading: false
         })
       });
@@ -126,29 +140,41 @@ class Student extends Component {
     });
 
     onQuestionReceived(received_question => {
-      let map = this.state.questionMap;
-      if(received_question.data == null || received_question.data.count <= 0) {
-          map.delete(received_question.question);
-      } else {
-          map.set(received_question.question, received_question.data.count);
-      }
+      if (received_question.type == "student") {
+        let map = this.state.studentQuestionMap;
+        if(received_question.data == null || received_question.data.count <= 0) {
+            map.delete(received_question.question);
+          } else {
+            map.set(received_question.question, received_question.data.count);
+          }
 
-      this.setState({
-          questionMap: map
-      });
+          this.setState({
+            studentQuestionMap: map
+          });
 
-      let myQuestions = this.state.myQuestions;
-      if (received_question.user === this.state.login) {
-        if (received_question.data == null || received_question.data.count <= 0) {
-            myQuestions.delete(received_question.question)
-        } else {
-            myQuestions.set(received_question.question, received_question.question_id.id);
+          let myQuestions = this.state.myQuestions;
+          if (received_question.user === this.state.login) {
+            if (received_question.data == null || received_question.data.count <= 0) {
+              myQuestions.delete(received_question.question)
+            } else {
+              myQuestions.set(received_question.question, received_question.question_id);
+            }
+          }
+
+          this.setState({
+            myQuestions: myQuestions
+          })
         }
-      }
-
-      this.setState({
-          myQuestions: myQuestions
-      })
+        else if(received_question != null){
+          let map = this.state.lecturerQuestionMap;
+          map.set(received_question.question,
+                  {question: received_question.question,
+                   type: received_question.type,
+                   options: received_question.options});
+          this.setState({
+            lecturerQuestionMap: map
+          })
+        }
     });
 
     onRelogin((user) => {
@@ -160,16 +186,17 @@ class Student extends Component {
 
     onClearAll(() => {
       this.setState({
-        questionMap: new HashMap()
+        studentQuestionMap: new HashMap(),
+        lecturerQuestionMap: new HashMap()
       });
     });
 
-    onQuestionAnswered(question => {
-      let questionMap = this.state.questionMap;
+    onStudentQuestionAnswered(question => {
+      let studentQuestionMap = this.state.studentQuestionMap;
       let myQuestions = this.state.myQuestions;
 
-      if (questionMap.has(question)) {
-         questionMap.delete(question);
+      if (studentQuestionMap.has(question)) {
+         studentQuestionMap.delete(question);
       }
       if (myQuestions.has(question)) {
          myQuestions.delete(question);
@@ -179,12 +206,20 @@ class Student extends Component {
       //   this.state.myQuestions.splice(i, 1);
       // }
       this.setState({
-        questionMap: questionMap,
+        studentQuestionMap: studentQuestionMap,
         room: this.state.room
       });
     });
 
     onDisconnect(this.state.myQuestions, this.state.room);
+  }
+
+  answer(question) {
+    let answer = this.state.data;
+    answerLecturerQuestion(question.question,
+                          {answer: answer,
+                           user: this.state.login},
+                           this.state.room);
   }
 
   ask(){
@@ -196,10 +231,13 @@ class Student extends Component {
   ask2(question){
     if(!this.state.myQuestions.has(question)){
     // if (!this.state.myQuestions.includes(question)) {
-      askQuestion(question, {room: this.state.room,
-        login: this.state.login,
-        name: this.state.name});
-
+      askQuestion(question,
+                  {question_type: "student",
+                   user: {room: this.state.room,
+                          login: this.state.login,
+                          name: this.state.name,
+                          type: "student"}
+                   });
       let temp = this.state.myQuestions;
       temp.set(question, '');
       this.setState({myQuestions: temp});
@@ -235,22 +273,59 @@ class Student extends Component {
     window.location.href = '/';
   }
 
-  render() {
-    var questions = [];
+  render_question(question_text) {
 
-    this.state.questionMap.keys().forEach(
+    var question = this.state.lecturerQuestionMap.get(question_text);
+
+    if(question.type == "text") {
+      return(
+        <div>
+          <h2 id="faq_instruction" className="display-4 my-0">{question.question}</h2>
+          <div class="row col-12">
+          <input type="text" className="form-control my-0" placeholder="Answer here!" value={this.state.data} onChange={this.updateQuestionField}/>
+          <div className="input-group-append my-0">
+            <button className="btn btn-outline-dark px-4" type="button" onClick={() => {this.answer(question); this.setState({data:'', view:"main"})}}>Submit</button>
+          </div>
+          </div>
+        </div>
+        )
+    }
+
+    if(question.type == "multiple choice") {
+      var optionList = question.options.map((option) =>
+      <div class="row longWord" key={option}>
+        <hr class=" w-100"/>
+        <p class="col-8 text-left">{option}</p>
+        <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
+                onClick={()=>{this.state.data = option; this.answer(question); this.setState({data:'', view:"main"})}}>Submit</button>
+      </div>
+      );
+
+      return(
+        <div>
+          <h2 id="faq_instruction" className="display-4 my-0">{question.question}</h2>
+          {optionList}
+        </div>
+      );
+    }
+  }
+
+  render() {
+    var studentQuestions = [];
+
+    this.state.studentQuestionMap.keys().forEach(
       function(key) {
-        questions.push([key, this.state.questionMap.get(key)]);
+        studentQuestions.push([key, this.state.studentQuestionMap.get(key)]);
       }, this)
 
-    questions.sort(
+    studentQuestions.sort(
       function(a, b) {
         return b[1] - a[1];
       }
     )
 
-    var questionList = questions.map((question) =>
-    <div class="row longWord" key={question}>
+    var studentQuestionList = studentQuestions.map((question) =>
+    <div class="row longWord" key={question[0]}>
       <hr class=" w-100"/>
       <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
         <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
@@ -262,92 +337,60 @@ class Student extends Component {
       </div>
     );
 
+    var lecturerQuestions = this.state.lecturerQuestionMap.keys();
+
+    var lecturerQuestionList = lecturerQuestions.map((question_text) =>
+    <div class="row">
+      <hr class=" w-100"/>
+      <p class="col-8 text-left">{question_text}</p>
+          <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
+          onClick={() => this.setState({view: question_text})}>Answer</button>
+      </div>
+    );
+
     let mainView;
 
-    return (
-      <div>
-        <h6 id="logging_header">{"Room " + this.state.room + " Logged in as: " + this.state.name}</h6>
-        <br/>
-        <h3 id="question_instruction" class="display-5 my-5">Ask a question!</h3>
-        <div class="input-group container-fluid col-9 mt-5">
-          <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
-          <div class="input-group-append my-4">
-            <button class="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
-          </div>
-        </div>
-
-        <div id="faq_questions" class="row">
     if(this.state.credentials && this.state.credentials !== ""
       && !this.state.loading && !this.state.errorMessage){
 
       mainView = <div>
-        <div>
-          <button onClick={() => this.logout()}>Logout</button>
-        </div>
-        <h6 id="logging_header">{"Logged in as: " + this.state.name}</h6>
-        <a id="faq_button" className="hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("faq_instruction");
-          let faq_button = document.getElementById("faq_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show  &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="faq_instruction" className="display-4 my-5">How do you feel about the lecture?</h2>
-        <div id="faq_questions" className="row">
-          <br/>
-          <button className="btn badge-pill btn-lg btn-outline-danger col-10 col-md-5 m-3" onClick={()=>this.ask2("I don't understand!")}>
-            I don&#39;t understand!
-          </button>
-          <button className="btn badge-pill btn-lg btn-outline-warning col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you give an example?")}>
-            Could you give an example?
-          </button>
-          <button className="btn badge-pill btn-lg btn-outline-primary col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you slow down?")}>
-            Could you slow down?
-          </button>
-          <button className="btn badge-pill btn-lg btn-outline-success col-10 col-md-5 m-3" onClick={()=>this.ask2("Could you speed up?")}>
-            Could you speed up?
-          </button>
-        </div>
-        <hr className="mt-5 mb-0"/>
-        <a id="question_button" className="text-primary hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("question_instruction");
-          let faq_button = document.getElementById("question_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="question_instruction" className="display-4 my-5">Ask a question of your own!</h2>
-        <div className="input-group container-fluid col-9 mt-5">
-          <input type="text" className="form-control my-4" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
-          <div className="input-group-append my-4">
+
+      <div>
+      {lecturerQuestionList}
+      </div>
+        <h2 id="faq_instruction" className="display-4 my-0"></h2>
+        <div id="input_bar" className="input-group">
+          <input type="text" className="form-control my-0" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
+          <div className="input-group-append my-0">
             <button className="btn btn-outline-dark px-4" type="button" onClick={this.ask}>Ask!</button>
           </div>
         </div>
-        <br/>
-        <hr className="mt-5 mb-0"/>
-        <a id="vote_button" className="text-primary hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("vote_instruction");
-          let faq_button = document.getElementById("vote_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="vote_instruction" className="display-4 my-5">Or you can vote on questions!</h2>
-        <div className="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
+        <div id="faq_questions" className="row col-12">
+          <button className="btn btn-lg btn-outline-danger col-6 col-md-6 m-0" onClick={()=>this.ask2("I don't understand!")}>
+            I don&#39;t understand!
+          </button>
+          <button className="btn btn-lg btn-outline-warning col-6 col-md-6 m-0" onClick={()=>this.ask2("Could you give an example?")}>
+            Could you give an example?
+          </button>
+          <button className="btn btn-lg btn-outline-primary col-6 col-md-6 m-0" onClick={()=>this.ask2("Could you slow down?")}>
+            Could you slow down?
+          </button>
+          <button className="btn btn-lg btn-outline-success col-6 col-md-6 m-0" onClick={()=>this.ask2("Could you speed up?")}>
+            Could you speed up?
+          </button>
+        </div>
+
+        <div className="container-fluid my-0 col-10" style={{display:"block"}}>{studentQuestionList}</div>
         {/* <Questions value={this.state.questions} /> */}
+        <div>
+          <button onClick={() => this.logout()}>Logout</button>
+        </div>
+        <h6 id="logging_header" className="my-0">{"Logged in as: " + this.state.name}</h6>
       </div>
+    }
+
+    if(this.state.view !== "main") {
+      return(this.render_question(this.state.view));
     }
 
     return (
@@ -382,10 +425,8 @@ class Student extends Component {
            color={'#0336FF'}
            loading={this.state.loading}
          />
-      </div>
-      </div>
-      </div>
 
+      </div>
     );
   }
 }

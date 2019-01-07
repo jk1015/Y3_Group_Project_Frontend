@@ -5,7 +5,6 @@ import {
     connectLecturer,
     onQuestionReceived,
     onQuestionAnswered,
-    answerQuestion,
     joinRoom,
     Header,
     onRoomsRecieved,
