@@ -153,6 +153,16 @@ code {
 
 }
 
+.btn:focus{
+   outline: none !important;
+   box-shadow: none !important;
+}
+
+.btn:active{
+   outline: none !important;
+   box-shadow: none !important;
+}
+
 .longWord{
   word-break: break-all;
   word-wrap: break-word;
