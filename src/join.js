@@ -241,7 +241,7 @@ class Join extends Component {
 
       return(
         <div>
-          {/* <Header value="QuestHub"/> */}
+          {/* <Header value="CUTe"/> */}
 
             {mainView}
             <ClipLoader

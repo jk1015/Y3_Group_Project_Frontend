@@ -135,7 +135,7 @@ function Footer() {
     <div id="footer">
       <div id="footer_nav">
         <div>
-          <h2><strong>QuestHub</strong></h2>
+          <h2><strong>CUTe</strong></h2>
         </div>
         <div className="footer_nav_item">
           <a className="footer_nav_link" href="/">Home</a>
