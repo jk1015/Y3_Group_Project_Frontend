@@ -186,6 +186,7 @@ class Student extends Component {
 
     onClearAll(() => {
       this.setState({
+        myQuestions: new HashMap(),
         studentQuestionMap: new HashMap(),
         lecturerQuestionMap: new HashMap()
       });
