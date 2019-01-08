@@ -181,7 +181,7 @@ class Join extends Component {
         <div>
         <p>Logged in as: {this.state.displayName}</p>
         <p>Type: {this.state.isLecturer ? "Lecturer" : "Student"}</p>
-        <button type="button" onClick={()=>redirectTo('', true)}>Logout</button>
+        <button id="logout" type="button" onClick={()=>redirectTo('', true)}>Logout</button>
         </div>
       }
 
@@ -197,28 +197,28 @@ class Join extends Component {
       var courseButton = null;
       if (this.state.currentcourse !== undefined) {
         courseButton =
-        <div>
-          <h2>Lecture in progress:</h2>
-          <button type="button" onClick={()=>this.redirectToRoom()}>
-            Join {this.state.currentcourse}
-          </button>
-        </div>
+          <div>
+            <h2>Lecture in progress:</h2>
+            <button type="button" onClick={()=>this.redirectToRoom()}>
+              Join {this.state.currentcourse}
+            </button>
+          </div>
       } else {
         courseButton =
-        <div>
-        <h2>No lectures in progress.</h2>
-        <p>If you think you should be in a lecture, check your enrolment below.</p>
-        </div>
+          <div>
+            <h2>No lectures in progress.</h2>
+            <p>If you think you should be in a lecture, check your enrolment below.</p>
+          </div>
       }
 
       var courseDisplay = null;
       if (this.state.courses && this.state.courses.length > 0) {
         courseDisplay =
-        <div>
-        {courseButton}
-        <h2>Courses:</h2>
-        {this.state.isLecturer ? allCourseButtons : courseList}
-        </div>
+          <div>
+            {courseButton}
+            <h2>Courses:</h2>
+            {this.state.isLecturer ? allCourseButtons : courseList}
+          </div>
       }
 
       let courseData = <p></p>;
@@ -243,14 +243,16 @@ class Join extends Component {
         <div>
           {/* <Header value="CUTe"/> */}
 
-            {mainView}
-            <ClipLoader
-               // className={override}
-               sizeUnit={"px"}
-               size={50}
-               color={'#0336FF'}
-               loading={this.state.loading}
-             />
+            <div id="Question_box">
+              {mainView}
+              <ClipLoader
+                 // className={override}
+                 sizeUnit={"px"}
+                 size={50}
+                 color={'#0336FF'}
+                 loading={this.state.loading}
+               />
+            </div>
 
           {/* <Footer /> */}
         </div>

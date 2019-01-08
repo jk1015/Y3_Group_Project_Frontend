@@ -155,9 +155,40 @@ code {
 
 }
 
+.btn:focus{
+   outline: none !important;
+   box-shadow: none !important;
+}
+
+.btn:active{
+   outline: none !important;
+   box-shadow: none !important;
+}
+
+.btn-outline-danger:active{
+  background-color: #ac0515 !important;
+}
+
+.btn-outline-warning:active{
+  background-color: #cf9100 !important;
+}
+
+.btn-outline-success:active{
+  background-color: #007715 !important;
+}
+
+.btn-outline-primary:active{
+  background-color: #004bcf !important;
+}
+
+.btn-outline-dark:active{
+  background-color: #646a70 !important;
+}
+
 .longWord{
-  word-break: break-all;
-  word-wrap: break-word;
+  /*word-break: break-all;
+  word-wrap: break-word;*/
+  hyphens: auto;
 }
 
 .row{
