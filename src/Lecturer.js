@@ -386,7 +386,11 @@ class Lecturer extends React.Component {
     var studentQuestions = [];
     this.state.studentQuestionMap.keys().forEach(
       function(key) {
-        studentQuestions.push([key, this.state.studentQuestionMap.get(key)]);
+        if(key !== "I don't understand!" &&
+           key !== "Could you give an example?" &&
+           key !== "Could you speed up?" &&
+           key !== "Could you slow down?")
+        {studentQuestions.push([key, this.state.studentQuestionMap.get(key)]);}
       }, this)
     studentQuestions.sort(
       function(a, b) {

@@ -204,12 +204,20 @@ class Join extends Component {
             </button>
           </div>
       } else {
+        this.state.currentcourse = "000";
         courseButton =
           <div>
             <h2>No lectures in progress.</h2>
             <p>If you think you should be in a lecture, check your enrolment below.</p>
           </div>
       }
+      courseButton =
+        <div>
+          <h2>Lecture in progress:</h2>
+          <button type="button" onClick={()=>this.redirectToRoom()}>
+            Join {this.state.currentcourse}
+          </button>
+        </div>
 
       var courseDisplay = null;
       if (this.state.courses && this.state.courses.length > 0) {
