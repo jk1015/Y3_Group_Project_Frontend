@@ -167,7 +167,8 @@ class Lecturer extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        //date?
+        start_time:0,
+        end_time:1546976183610
       })
     })
     .then(res =>{
