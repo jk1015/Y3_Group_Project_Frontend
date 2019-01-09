@@ -5,10 +5,13 @@ import { ClipLoader } from 'react-spinners';
 import {
     onClearAll,
     clearAll,
+    askQuestion,
+    connectLecturer,
     connectToRoom,
     onQuestionReceived,
-    onQuestionAnswered,
-    answerQuestion,
+    answerStudentQuestion,
+    onStudentQuestionAnswered,
+    onLecturerQuestionAnswered,
     joinRoom,
     Header,
     Footer,
@@ -26,7 +29,12 @@ class Lecturer extends React.Component {
     const credentials = cookieHandler.getCookie("auth");
 
     this.state ={
-        questionMap: new HashMap(),
+        studentQuestionMap: new HashMap(),
+        lecturerQuestionMap: new HashMap(),
+        question_to_render: false,
+        view: "main",
+        setQuestionTextField: '',
+        option_set: [],
         room: props.room,
         login: undefined,
         name: undefined,
@@ -73,10 +81,15 @@ class Lecturer extends React.Component {
         }
     }
 
+    this.updateSetQuestionTextField = this.updateSetQuestionTextField.bind(this);
+    this.ask = this.ask.bind(this);
+
     if(credentials !== undefined && credentials !== ''){
-      connectToRoom(credentials, this.state.room, "lecturer", questionMap =>{
+      connectToRoom(credentials, this.state.room, "lecturer", questionMaps =>{
         let map = new HashMap();
-        map.copy(questionMap);
+        let map2 = new HashMap();
+        map.copy(questionMaps.sqm);
+        map2.copy(questionMaps.lqm);
         var dataNew=this.state.data;
         dataNew.datasets[0].data=[
           map.get("I don't understand!") ? map.get("I don't understand!").count : null,
@@ -84,7 +97,8 @@ class Lecturer extends React.Component {
           map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
           map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
         this.setState({
-            questionMap: map,
+            studentQuestionMap: map,
+            lecturerQuestionMap:map2,
             room: this.state.room,
             data: dataNew,
             options: this.state.options,
@@ -104,29 +118,43 @@ class Lecturer extends React.Component {
       })
     })
 
-    onQuestionReceived(questionTally => {
-        let map = this.state.questionMap;
+    onQuestionReceived(received_question => {
+        if(received_question.type == "student") {
+          let map = this.state.studentQuestionMap;
 
-        if(questionTally.data == null || questionTally.data.count <= 0)
-          map.delete(questionTally.question)
-        else
-          map.set(questionTally.question, questionTally.data);
-          var dataNew=this.state.data;
-          dataNew.datasets[0].data=[
-            map.get("I don't understand!") ? map.get("I don't understand!").count : null,
-            map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
-            map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
-            map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
-        this.setState({
-            questionMap: map,
-            room: this.state.room,
-            data: dataNew,
-            options: this.state.options
-        })
+          if(received_question.data == null || received_question.data.count <= 0)
+            map.delete(received_question.question)
+          else
+            map.set(received_question.question, received_question.data);
+            var dataNew=this.state.data;
+            dataNew.datasets[0].data=[
+              map.get("I don't understand!") ? map.get("I don't understand!").count : null,
+              map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
+              map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
+              map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
+          this.setState({
+              studentQuestionMap: map,
+              room: this.state.room,
+              data: dataNew,
+              options: this.state.options
+          })
+        }
+        else if(received_question.data !== null){
+          let map = this.state.lecturerQuestionMap;
+          map.set(received_question.question, received_question.data);
+          this.setState({lecturerQuestionMap: map})
+        }
+        else {
+          let map = this.state.studentQuestionMap;
+          map.delete(received_question.question);
+          this.setState({
+            studentQuestionMap: map
+          })
+        }
     });
 
-    onQuestionAnswered(question => {
-        let map = this.state.questionMap;
+    onStudentQuestionAnswered(question => {
+        let map = this.state.studentQuestionMap;
         map.delete(question);
         var dataNew=this.state.data;
         dataNew.datasets[0].data=[
@@ -135,15 +163,25 @@ class Lecturer extends React.Component {
           map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
           map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
         this.setState({
-            questionMap: map,
+            studentQuestionMap: map,
             room: this.state.room,
             data: dataNew,
             options: this.state.options
         })
     });
 
+    onLecturerQuestionAnswered((answer) => {
+      let map = this.state.lecturerQuestionMap;
+      map.get(answer.question).answers.push(answer.answer);
+      map.get(answer.question).count++;
+      this.setState({
+        lecturerQuestionMap: map
+      });
+    })
+
     onClearAll(() => {
         let map = new HashMap();
+        let map2 = new HashMap();
         var dataNew=this.state.data;
         dataNew.datasets[0].data=[
           map.get("I don't understand!") ? map.get("I don't understand!").count : null,
@@ -151,12 +189,40 @@ class Lecturer extends React.Component {
           map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
           map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
         this.setState({
-        questionMap: map,
+        studentQuestionMap: map,
+        lecturerQuestionMap: map2,
         room: this.state.room,
         data: dataNew,
         options: this.state.options
         });
     });
+  }
+
+
+  updateSetQuestionTextField(e) {
+    this.setState({setQuestionTextField: e.target.value});
+  }
+
+  updateOptionSetTextField(n, e) {
+    this.state.option_set[n] = e.target.value;
+    this.forceUpdate();
+  }
+
+  ask(question_type){
+    let question = this.state.setQuestionTextField;
+    let options = this.state.option_set.slice();
+
+    askQuestion(question,
+                {question_type: question_type,
+                 options: options,
+                 user: {room: this.state.room,
+                        login: this.state.login,
+                        name: this.state.name,
+                        type: "lecturer"}
+                 });
+
+    this.setState({setQuestionTextField: '',
+                   option_set: []});
   }
 
   componentDidMount(){
@@ -186,22 +252,169 @@ class Lecturer extends React.Component {
   logout(){
     cookieHandler.setCookie('auth', '');
     window.location.href = '/';
+
+  }
+
+  render_question(question_text) {
+
+    var question = this.state.lecturerQuestionMap.get(question_text)
+    if(question.type == "text") {
+      var answerList = question.answers.map((user_answer) =>
+        <div class="row">
+          <p class="col-8 text-left">{user_answer.answer}</p>
+          <p class="col-4 text-right">{user_answer.user}</p>
+          <hr class=" w-100"/>
+        </div>
+      );
+      return (
+        <div>
+        <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "viewingAnswers"})}>Back</button>
+        {answerList}
+        </div>
+      );
+    }
+    else if(question.type == "multiple choice") {
+
+      var counts = [];
+      for (var i = 0; i < question.options.length; i++) {
+        counts.push(0);
+      }
+      question.answers.forEach((user_answer) => {
+        for (var i = 0; i < counts.length; i++) {
+          if (user_answer.answer == question.options[i]) {
+            counts[i]++;
+          }
+        }
+      });
+
+      var results = {labels: question.options,
+                  datasets: [{
+                    label:'',
+                    data: counts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.4)',
+                        'rgba(255, 206, 86, 0.4)',
+                        'rgba(54, 162, 235, 0.4)',
+                        'rgba(75, 192, 192, 0.4)',
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                  }]}
+        var options = {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero:true
+              }
+            }],
+            xAxes: [{
+              ticks:{
+                display: true
+              }
+            }]
+          },
+          legend:{
+            display:true
+          }
+        }
+      return (
+        <div className="container my-3">
+          <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "viewingAnswers"})}>Back</button>
+          <Bar
+            data={results}
+            options={options}
+          />
+        </div>
+      );
+    }
   }
 
   render() {
-    var questions = [];
-    this.state.questionMap.keys().forEach(
-      function(key) {
-        questions.push([key, this.state.questionMap.get(key)]);
-      }, this)
+    var option_set_list = [];
 
-    questions.sort(
+    for (var i = 0; i < this.state.option_set.length; i++) {
+      let j = i;
+      option_set_list.push(
+        <div class="row longWord">
+        <input type="text" class="form-control my-4"
+                           value={this.state.option_set[i]} placeholder={"Option " + (i + 1)}
+                           onChange={(e) => this.updateOptionSetTextField(j, e)}/>
+          {(this.state.option_set.length == i+1) ?
+          <div class = "input-group-append my-4">
+          <button class="btn btn-outline-dark px-4" type="button" onClick={() => {this.state.option_set.push(""); this.forceUpdate()}}>Add another option</button>
+          <button class="btn btn-outline-dark px-4" type="button" onClick={() => {this.ask("multiple choice")}}>Done!</button>
+          </div>:
+          undefined}
+
+        </div>);
+    }
+
+    let setView =
+      <div>
+        <h1>{this.state.room + " Question Setting Page"}</h1>
+        <div id="Change view">
+        <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "main"})}>View student feedback</button>
+        <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "viewingAnswers"})}>View student answers</button>
+        </div>
+        <div class="input-group container-fluid col-9 mt-5">
+          <input type="text" class="form-control my-4" placeholder="Ask your question here" value={this.state.setQuestionTextField} onChange={this.updateSetQuestionTextField}/>
+          <div class="input-group-append my-4">
+            <button class="btn btn-outline-dark px-4" type="button" onClick={() => {this.state.option_set.push(""); this.forceUpdate()}}>Multiple Choice</button>
+            <button class="btn btn-outline-dark px-4" type="button" onClick={()=> {this.ask("text")}}>Text answer</button>
+          </div>
+        </div>
+        <div>{option_set_list}</div>
+      </div>
+
+      var lecturerQuestions = this.state.lecturerQuestionMap.keys();
+
+      var lecturerQuestionList = lecturerQuestions.map((question_text) =>
+      <div class="row">
+        <hr class=" w-100"/>
+        <p class="col-8 text-left">{question_text}</p>
+            <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
+            onClick={() => this.setState({view: question_text})}>View answers</button>
+        </div>
+      );
+
+    let answerView =
+      <div>
+        <div id="Change view">
+          <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "main"})}>View student feedback</button>
+          <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "settingQuestions"})}>Set questions for students</button>
+        </div>
+        {lecturerQuestionList}
+      </div>
+
+    var studentQuestions = [];
+    this.state.studentQuestionMap.keys().forEach(
+      function(key) {
+        if(key !== "I don't understand!" &&
+           key !== "Could you give an example?" &&
+           key !== "Could you speed up?" &&
+           key !== "Could you slow down?")
+        {studentQuestions.push([key, this.state.studentQuestionMap.get(key)]);}
+      }, this)
+    studentQuestions.sort(
       function(a, b) {
         return b[1] - a[1];
       }
     )
 
-    var questionList = questions.map((question) =>
+    function generate_mail_link(question) {
+      let mail_link = "mailto:";
+      question[1].users.forEach(user => {
+        mail_link = mail_link + user.login + "@ic.ac.uk, ";
+      });
+      return mail_link
+    }
+
+    var studentQuestionList = studentQuestions.map((question) =>
     <div class="row longWord">
       <hr class=" w-100"/>
       <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
@@ -210,8 +423,14 @@ class Lecturer extends React.Component {
           return user.name;
         })}</p>
       </div>
-      <button class="btn btn-outline-warning col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>answerQuestion(question[0], this.state.room)}>Answer</button>
-      </div>
+        <div class = "input-group-append my-4">
+        <button class="btn btn-outline-warning" onClick={()=>answerStudentQuestion(question[0], "Answered in lecture", this.state.room)}>Answered</button>
+        <button class="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by email", this.state.room)}}>Answer askers via email</button>
+        <button class="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by class", this.state.room);
+                                                              this.state.setQuestionTextField = question[0];
+                                                              this.ask("text")}}>Send question to class</button>
+        </div>
+    </div>
     );
 
     let mainView;
@@ -250,6 +469,11 @@ class Lecturer extends React.Component {
             options={this.state.options}
           />
         </div>
+        <div id="Change view">
+        <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "settingQuestions"})}>Set questions for students</button>
+        <button className="btn btn-outline-dark" onClick={()=>this.setState({view: "viewingAnswers"})}>View student answers</button>
+        </div>
+
         <hr className="mt-5 mb-0"/>
         <a id="studentQuestions_button" className="hide_button" href="#" onClick={()=>{
           let faq_questions = document.getElementById("studentQuestions_instruction");
@@ -263,7 +487,7 @@ class Lecturer extends React.Component {
           }
         }}>hide &#9652;</a>
         <h2 id="studentQuestions_instruction" className="display-4 my-5">Questions asked by students are here!</h2>
-        <div className="container-fluid my-5 col-10" style={{display:"block"}}>{questionList}</div>
+        <div className="container-fluid my-5 col-10" style={{display:"block"}}>{studentQuestionList}</div>
         <div id="Clear">
           <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
         </div>
@@ -271,10 +495,26 @@ class Lecturer extends React.Component {
       </div>
     }
 
-
+    if(this.state.view == "settingQuestions") {
+      return (
+        <div>
+          {setView}
+        </div>
+      )
+    }
+    else if(this.state.view == "viewingAnswers") {
+      return (
+        <div>
+          {answerView}
+        </div>
+      )
+    }
+    else if(this.state.view != "main") {
+      return(this.render_question(this.state.view));
+    }
     return (
       <div>
-        <h1>{"Room " + this.state.room}</h1>
+        <h1>{this.state.room}</h1>
 
         {mainView}
         {this.state.errorMessage ?

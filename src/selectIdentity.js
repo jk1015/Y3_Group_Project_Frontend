@@ -14,7 +14,7 @@ class SelectIdentity extends Component {
     {
       return(
         <div>
-          <Header value="QuestHub"/>
+          <Header value="CUTe"/>
           <div className="welcome_page_text">
             <p>Increasing engagement in the classroom through technology</p>
           </div>

@@ -27,8 +27,8 @@ function connectToRoom(credentials, room, userType, cb) {
     joinRoom(credentials, room, userType);
     socket.on('on rooms lists', lists => {
       console.log("in");
-      socket.on('on lecturer connect', questionMap => cb(questionMap));
-      socket.emit('lecturer connect', room);
+      socket.on('on lecturer connect', questionMaps => cb(questionMaps));
+      socket.emit('lecturer connect', room); //Lecturer?
     });
 }
 
@@ -48,12 +48,20 @@ function clearAll(room) {
     socket.emit('clear all', room);
 }
 
-function answerQuestion(question, room) {
-    socket.emit('answer question', question, room);
+function answerStudentQuestion(question, answer, room) {
+    socket.emit('answer student question', question, room);
 }
 
-function onQuestionAnswered(cb) {
-    socket.on('question answered', question => cb(question));
+function answerLecturerQuestion(question, answer, room) {
+    socket.emit('answer lecturer question', question, answer, room);
+}
+
+function onStudentQuestionAnswered(cb) {
+    socket.on('student question answered', answer => cb(answer));
+}
+
+function onLecturerQuestionAnswered(cb) {
+    socket.on('lecturer question answered', answer => cb(answer) )
 }
 
 function onRoomsRecieved(cb) {
@@ -127,7 +135,7 @@ function Footer() {
     <div id="footer">
       <div id="footer_nav">
         <div>
-          <h2><strong>QuestHub</strong></h2>
+          <h2><strong>CUTe</strong></h2>
         </div>
         <div className="footer_nav_item">
           <a className="footer_nav_link" href="/">Home</a>
@@ -149,8 +157,10 @@ export {
     askQuestion,
     onQuestionReceived,
     connectToRoom,
-    answerQuestion,
-    onQuestionAnswered,
+    answerStudentQuestion,
+    onStudentQuestionAnswered,
+    answerLecturerQuestion,
+    onLecturerQuestionAnswered,
     stopAsking,
     Header,
     onRoomsRecieved,
