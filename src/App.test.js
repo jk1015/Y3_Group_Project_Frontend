@@ -1,4 +1,4 @@
-/*import React from 'react';
+import React from 'react';
 import { shallow } from 'enzyme';
 import { mount } from 'enzyme';
 import App from './App';
@@ -105,4 +105,3 @@ describe('<SelectIdentity />', () => {
     expect(real_content.indexOf(content) > -1).toEqual(true);
   });
 });
-*/

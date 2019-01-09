@@ -140,9 +140,10 @@ class Student extends Component {
     });
 
     onQuestionReceived(received_question => {
+
       if (received_question.type == "student") {
         let map = this.state.studentQuestionMap;
-        if(received_question.data == null || received_question.data.count <= 0) {
+        if( received_question.data == null || received_question.data.count <= 0) {
             map.delete(received_question.question);
           } else {
             map.set(received_question.question, received_question.data.count);
@@ -165,7 +166,7 @@ class Student extends Component {
             myQuestions: myQuestions
           })
         }
-        else if(received_question != null){
+        else if(received_question.data !== null){
           let map = this.state.lecturerQuestionMap;
           map.set(received_question.question,
                   {question: received_question.question,
@@ -175,6 +176,7 @@ class Student extends Component {
             lecturerQuestionMap: map
           })
         }
+
     });
 
     onRelogin((user) => {

@@ -139,10 +139,17 @@ class Lecturer extends React.Component {
               options: this.state.options
           })
         }
-        else if(received_question !== null){
+        else if(received_question.data !== null){
           let map = this.state.lecturerQuestionMap;
           map.set(received_question.question, received_question.data);
           this.setState({lecturerQuestionMap: map})
+        }
+        else {
+          let map = this.state.studentQuestionMap;
+          map.delete(received_question.question);
+          this.setState({
+            studentQuestionMap: map
+          })
         }
     });
 
