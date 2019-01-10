@@ -82,31 +82,34 @@ class Visualization extends React.Component {
         options: {
           scales: {
             xAxes: [{
-						  // scaleLabel: {
-							//   display: true,
-							//   labelString: 'Time',
-						  // },
+						  scaleLabel: {
+							  display: true,
+							  labelString: 'Time',
+						  },
               ticks:{
                 userCallback: function(tick)
                 {
+                  if(tick==(props.end-props.begin)/1000)
+                    return '';
                   var second = tick % 60;
                   var minute = (tick-second)/60;
 									return ((minute-minute%10)/10).toString() + (minute%10).toString() + ':' + ((second-second%10)/10).toString() + (second%10).toString();
-							  }
+							  },
+                max:(props.end-props.begin)/1000
               }
+					  }],
+					  yAxes: [{
+						  scaleLabel: {
+							  display: true,
+							  labelString: 'Votes'
+						  }
+              // ticks:{
+              //   display: true,
+              //   beginAtZero: true,
+              //   min:0,
+              //   max:5
+              // }
 					  }]
-					  // yAxes: [{
-						//   scaleLabel: {
-						// 	  display: true,
-						// 	  labelString: 'Votes'
-						//   },
-            //   ticks:{
-            //     display: true,
-            //     beginAtZero: true,
-            //     min:0,
-            //     max:5
-            //   }
-					  // }]
 				  }
         }
       }
@@ -191,6 +194,7 @@ class Visualization extends React.Component {
     var totalLen=endSecond-beginSecond;
     var qCount={};
     var dataNew=this.state.data;
+    var optionsNew=this.state.options;
     dataNew.datasets=[];
     for(var key in q)
     {

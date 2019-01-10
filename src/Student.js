@@ -373,16 +373,16 @@ class Student extends Component {
           </div>
         </div>
         <div id="faq_questions" className="row col-12">
-          <button className="btn btn-lg btn-outline-danger col-6 col-md-6 m-0" onClick={()=>this.ask2("I don't understand!")}>
+          <button className="btn btn-lg btn-outline-danger col-12 col-sm-6 m-0" onClick={()=>this.ask2("I don't understand!")}>
             I don&#39;t understand!
           </button>
-          <button className="btn btn-lg btn-outline-warning col-6 col-md-6 m-0" onClick={()=>this.ask2("Could you give an example?")}>
+          <button className="btn btn-lg btn-outline-warning col-12 col-sm-6 m-0" onClick={()=>this.ask2("Could you give an example?")}>
             Could you give an example?
           </button>
-          <button className="btn btn-lg btn-outline-primary col-6 col-md-6 m-0" onClick={()=>this.ask2("Could you slow down?")}>
+          <button className="btn btn-lg btn-outline-primary col-12 col-sm-6 m-0" onClick={()=>this.ask2("Could you slow down?")}>
             Could you slow down?
           </button>
-          <button className="btn btn-lg btn-outline-success col-6 col-md-6 m-0" onClick={()=>this.ask2("Could you speed up?")}>
+          <button className="btn btn-lg btn-outline-success col-12 col-sm-6 m-0" onClick={()=>this.ask2("Could you speed up?")}>
             Could you speed up?
           </button>
         </div>
