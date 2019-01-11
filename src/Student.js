@@ -85,13 +85,13 @@ class Student extends Component {
             myQuestions.delete(received_question.question)
           } else {
             map.set(received_question.question, received_question.data.count);
-            if (received_question.user == this.state.login) {
+            if (received_question.user === this.state.login) {
               myQuestions.set(received_question.question, received_question.question_id);
             }
           }
 
           this.setState({
-            studentQuestionMap: map
+            studentQuestionMap: map,
             myQuestions: myQuestions
           })
         }

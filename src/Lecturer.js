@@ -122,7 +122,6 @@ class Lecturer extends React.Component {
             map.delete(received_question.question)
           else
             map.set(received_question.question, received_question.data);
-            let dataNew = this.state.data;
             this.updateBarChart(map);
             this.setState({
               studentQuestionMap: map,
