@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {} from 'react';
 import { Bar } from 'react-chartjs-2';
 import { ClipLoader } from 'react-spinners';
 
@@ -6,15 +6,11 @@ import {
     onClearAll,
     clearAll,
     askQuestion,
-    connectLecturer,
     connectToRoom,
     onQuestionReceived,
     answerStudentQuestion,
     onStudentQuestionAnswered,
     onLecturerQuestionAnswered,
-    joinRoom,
-    Header,
-    Footer,
     onJoinError,
     onRelogin
 } from './api';
@@ -119,7 +115,7 @@ class Lecturer extends React.Component {
     })
 
     onQuestionReceived(received_question => {
-        if(received_question.type == "student") {
+        if(received_question.type === "student") {
           let map = this.state.studentQuestionMap;
 
           if(received_question.data == null || received_question.data.count <= 0)
@@ -204,7 +200,9 @@ class Lecturer extends React.Component {
   }
 
   updateOptionSetTextField(n, e) {
-    this.state.option_set[n] = e.target.value;
+    let arr = this.state.option_set.slice(0);
+    arr[n] = e.target.value;
+    this.setState({option_set: arr});
     this.forceUpdate();
   }
 
@@ -258,7 +256,7 @@ class Lecturer extends React.Component {
   render_question(question_text) {
 
     var question = this.state.lecturerQuestionMap.get(question_text)
-    if(question.type == "text") {
+    if(question.type === "text") {
       var answerList = question.answers.map((user_answer) =>
         <div class="row">
           <p class="col-8 text-left">{user_answer.answer}</p>
@@ -273,7 +271,7 @@ class Lecturer extends React.Component {
         </div>
       );
     }
-    else if(question.type == "multiple choice") {
+    else if(question.type === "multiple choice") {
 
       var counts = [];
       for (var i = 0; i < question.options.length; i++) {
@@ -281,7 +279,7 @@ class Lecturer extends React.Component {
       }
       question.answers.forEach((user_answer) => {
         for (var i = 0; i < counts.length; i++) {
-          if (user_answer.answer == question.options[i]) {
+          if (user_answer.answer === question.options[i]) {
             counts[i]++;
           }
         }
@@ -344,7 +342,7 @@ class Lecturer extends React.Component {
         <input type="text" class="form-control my-4"
                            value={this.state.option_set[i]} placeholder={"Option " + (i + 1)}
                            onChange={(e) => this.updateOptionSetTextField(j, e)}/>
-          {(this.state.option_set.length == i+1) ?
+          {(this.state.option_set.length === i+1) ?
           <div class = "input-group-append my-4">
           <button class="btn btn-outline-dark px-4" type="button" onClick={() => {this.state.option_set.push(""); this.forceUpdate()}}>Add another option</button>
           <button class="btn btn-outline-dark px-4" type="button" onClick={() => {this.ask("multiple choice")}}>Done!</button>
@@ -406,13 +404,14 @@ class Lecturer extends React.Component {
       }
     )
 
+/*
     function generate_mail_link(question) {
       let mail_link = "mailto:";
       question[1].users.forEach(user => {
         mail_link = mail_link + user.login + "@ic.ac.uk, ";
       });
       return mail_link
-    }
+    } */
 
     var studentQuestionList = studentQuestions.map((question) =>
     <div class="row longWord">
@@ -427,7 +426,7 @@ class Lecturer extends React.Component {
         <button class="btn btn-outline-warning" onClick={()=>answerStudentQuestion(question[0], "Answered in lecture", this.state.room)}>Answered</button>
         <button class="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by email", this.state.room)}}>Answer askers via email</button>
         <button class="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by class", this.state.room);
-                                                              this.state.setQuestionTextField = question[0];
+                                                              this.setState({setQuestionTextField : question[0]});
                                                               this.ask("text")}}>Send question to class</button>
         </div>
     </div>
@@ -451,18 +450,6 @@ class Lecturer extends React.Component {
         <p className="SlowDownText">Number of students who ask for slowing down: {this.state.questionMap.get("Could you slow down?")}</p>
         <p className="SpeedUpText">Number of students who ask for speeding up: {this.state.questionMap.get("Could you speed up?")}</p> */}
 
-        <a id="chart_button" className="hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("chart_instruction");
-          let faq_button = document.getElementById("chart_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show  &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="chart_instruction" className="display-4 my-5">Students now feel...</h2>
         <div className="container my-3">
           <Bar
             data={this.state.data}
@@ -475,18 +462,6 @@ class Lecturer extends React.Component {
         </div>
 
         <hr className="mt-5 mb-0"/>
-        <a id="studentQuestions_button" className="hide_button" href="#" onClick={()=>{
-          let faq_questions = document.getElementById("studentQuestions_instruction");
-          let faq_button = document.getElementById("studentQuestions_button");
-          if (faq_questions.style.display === "none") {
-            faq_questions.style.display = "block";
-            faq_button.innerHTML = "hide &#9652;";
-          } else {
-            faq_questions.style.display = "none";
-            faq_button.innerHTML = "show  &#9662;";
-          }
-        }}>hide &#9652;</a>
-        <h2 id="studentQuestions_instruction" className="display-4 my-5">Questions asked by students are here!</h2>
         <div className="container-fluid my-5 col-10" style={{display:"block"}}>{studentQuestionList}</div>
         <div id="Clear">
           <button className="btn btn-outline-dark" style={{margin:'50px'}} onClick={()=>clearAll(this.state.room)}>CLEAR ALL!</button>
@@ -495,21 +470,21 @@ class Lecturer extends React.Component {
       </div>
     }
 
-    if(this.state.view == "settingQuestions") {
+    if(this.state.view === "settingQuestions") {
       return (
         <div>
           {setView}
         </div>
       )
     }
-    else if(this.state.view == "viewingAnswers") {
+    else if(this.state.view === "viewingAnswers") {
       return (
         <div>
           {answerView}
         </div>
       )
     }
-    else if(this.state.view != "main") {
+    else if(this.state.view !== "main") {
       return(this.render_question(this.state.view));
     }
     return (
