@@ -73,35 +73,3 @@ describe('<Join />', () => {
     expect(join_area.contains(<p>Logged in as: stu_1</p>)).toEqual(true);
   });
 });
-
-describe('<SelectIdentity />', () => {
-  it('renders header', () => {
-    const selectIdentity_area = shallow(<SelectIdentity />);
-    expect(selectIdentity_area.find('Header').length).toEqual(1);
-  });
-
-  it('renders footer', () => {
-    const selectIdentity_area = shallow(<SelectIdentity />);
-    expect(selectIdentity_area.find('Footer').length).toEqual(1);
-  });
-
-  it('renders welcome page text', () => {
-    const selectIdentity_area = shallow(<SelectIdentity />);
-    expect(selectIdentity_area.find('div.welcome_page_text').length).toEqual(2);
-  });
-
-  it('renders welcome page text img', () => {
-    const selectIdentity_area = shallow(<SelectIdentity />);
-    expect(selectIdentity_area.find('div#welcome_page_text_img').length).toEqual(1);
-  });
-
-  it('check welcome page text img content', () => {
-    const selectIdentity_area = shallow(<SelectIdentity />);
-    const content =
-      '<div id="welcome_page_text_img">' +
-      '<p>Ask questions without disrupting</p>' +
-      '</div>';
-    const real_content = selectIdentity_area.find('div#welcome_page_text_img').html();
-    expect(real_content.indexOf(content) > -1).toEqual(true);
-  });
-});
