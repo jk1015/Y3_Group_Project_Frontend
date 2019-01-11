@@ -4,11 +4,8 @@ import { mount } from 'enzyme';
 import App from './App';
 import Student from './Student';
 import Lecturer from './Lecturer';
-import SelectIdentity from './selectIdentity';
 import Join from './join';
 import {
-  Header,
-  Footer,
   login,
   onLoginError,
   onCourseReceived,
