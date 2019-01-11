@@ -330,7 +330,7 @@ class Student extends Component {
 
     return (
       <div>
-        <h1>{"Room " + this.state.room}</h1>
+        <h1>{this.state.room}</h1>
 
         {mainView}
         {this.state.errorMessage ?
