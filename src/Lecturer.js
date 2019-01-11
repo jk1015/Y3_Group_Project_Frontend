@@ -400,7 +400,7 @@ class Lecturer extends React.Component {
       }, this)
     studentQuestions.sort(
       function(a, b) {
-        return b[1] - a[1];
+        return b[1].count - a[1].count;
       }
     )
 
@@ -414,7 +414,7 @@ class Lecturer extends React.Component {
     } */
 
     let studentQuestionList = studentQuestions.map((question) =>
-    <div className="row longWord">
+    <div key={question[0]} className="row longWord">
       <hr className=" w-100"/>
       <div className="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
         <p className="col-8 text-left">{question[0]}</p>: <p className="col-3">{question[1].count}</p>
