@@ -1,8 +1,4 @@
-
-
-import React, { Component } from 'react';
-import { Line } from 'react-chartjs-2';
-import { ClipLoader } from 'react-spinners';
+import React, {} from 'react';
 
 const cookieHandler = require('./CookieHandler');
 

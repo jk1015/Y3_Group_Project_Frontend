@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Header,
-  Footer,
   login,
   onLoginError,
   onCourseReceived,
   onCourseDataReceived,
-  requestCourseData,
   relogin
 } from './api';
 import { ClipLoader } from 'react-spinners';
@@ -59,7 +56,7 @@ class Join extends Component {
         cookieHandler.setCookie('auth', course.token, 30);
 
       let isLecturer = false;
-      if (course.doc_user == "lecturer") {
+      if (course.doc_user === "lecturer") {
         isLecturer = true;
       };
       this.setState({
@@ -143,7 +140,7 @@ class Join extends Component {
     let dates = []
     for (let i = 0; i < 52; i++) {
       for (let j = 0; j < sessions; j++) {
-        if (events[j].rawweeks[i] == 'Y') {
+        if (events[j].rawweeks[i] === 'Y') {
           let thisDate = new Date();
           thisDate.setDate(workingDate.getDate() + events[j].day);
           //thisDate.setTime(events[j].starttime);
@@ -206,7 +203,7 @@ class Join extends Component {
             </button>
           </div>
       } else {
-        this.state.currentcourse = "000";
+        this.setState({currentcourse : "000"});
         courseButton =
           <div>
             <h2>No lectures in progress.</h2>

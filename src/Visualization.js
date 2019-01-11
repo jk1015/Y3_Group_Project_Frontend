@@ -1,8 +1,5 @@
-
-
-import React, { Component } from 'react';
+import React, {} from 'react';
 import { Scatter } from 'react-chartjs-2';
-import { ClipLoader } from 'react-spinners';
 
 const cookieHandler = require('./CookieHandler');
 
@@ -89,7 +86,7 @@ class Visualization extends React.Component {
               ticks:{
                 userCallback: function(tick)
                 {
-                  if(tick==(props.end-props.begin)/1000)
+                  if(tick === (props.end-props.begin) / 1000)
                     return '';
                   var second = tick % 60;
                   var minute = (tick-second)/60;
@@ -194,12 +191,11 @@ class Visualization extends React.Component {
     var totalLen=endSecond-beginSecond;
     var qCount={};
     var dataNew=this.state.data;
-    var optionsNew=this.state.options;
     dataNew.datasets=[];
     for(var key in q)
     {
       qCount[key]=new Array(totalLen).fill(0);
-      for(var i=0;i<q[key].length;i++)
+      for(i=0;i<q[key].length;i++)
       {
         qCount[key][(q[key][i][0]-q[key][i][0]%1000)/1000-beginSecond]++;
         if(q[key][i][1])
@@ -207,9 +203,9 @@ class Visualization extends React.Component {
       }
       var lineData=[];
       var count=0;
-      for(var i=0;i<totalLen;i++)
+      for(i=0;i<totalLen;i++)
       {
-        if(qCount[key][i]!=0)
+        if(qCount[key][i]!==0)
         {
           count+=qCount[key][i];
           lineData.push({x:i,y:count});

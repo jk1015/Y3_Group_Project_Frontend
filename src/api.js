@@ -1,5 +1,4 @@
 import openSocket from 'socket.io-client';
-import React, { Component } from 'react';
 
 //NOTE: Don't deploy to heroku! LDAP access can only be done whilst in DoC!
 //const socket = openSocket('group26-backend.herokuapp.com');
@@ -100,55 +99,6 @@ function onCourseDataReceived(cb) {
   socket.on('course data received', data => cb(data));
 }
 
-function Header(props) {
-  let title = props.value;
-  let className1 = "nav_item";
-  let className2 = "nav_item";
-  switch (title) {
-    case "Room":
-      className2 = className2 + "_active";
-      break;
-    case "Welcome":
-      className1 = className1 + "_active";
-      break;
-  }
-  return (
-    <div>
-      <div id="header">
-        <img id="header_logo" src="/app_logo.png"/>
-        <p>{title}</p>
-      </div>
-      <nav id="header_nav">
-        <a className={className1} href="/">
-          <p>Home</p>
-        </a>
-        <a className={className2} href="/join">
-          <p>Rooms</p>
-        </a>
-      </nav>
-    </div>
-  );
-}
-
-function Footer() {
-  return (
-    <div id="footer">
-      <div id="footer_nav">
-        <div>
-          <h2><strong>CUTe</strong></h2>
-        </div>
-        <div className="footer_nav_item">
-          <a className="footer_nav_link" href="/">Home</a>
-        </div>
-        <div className="footer_nav_item">
-          <a className="footer_nav_link" href="/room">Room</a>
-        </div>
-      </div>
-      <img id="footer_logo" src="/app_logo.png"/>
-    </div>
-  );
-}
-
 export {
     joinRoom,
     onClearAll,
@@ -162,10 +112,8 @@ export {
     answerLecturerQuestion,
     onLecturerQuestionAnswered,
     stopAsking,
-    Header,
     onRoomsRecieved,
     connectRoom,
-    Footer,
     login,
     onLoginError,
     onCourseReceived,
