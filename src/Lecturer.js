@@ -24,6 +24,9 @@ class Lecturer extends React.Component {
     super(props);
     const credentials = cookieHandler.getCookie("auth");
 
+    let faq = ["I don't understand!", "Could you give an example?",
+               "Could you slow down?", "Could you speed up?"]
+
     this.state ={
         studentQuestionMap: new HashMap(),
         lecturerQuestionMap: new HashMap(),
@@ -31,6 +34,7 @@ class Lecturer extends React.Component {
         view: "main",
         setQuestionTextField: '',
         option_set: [],
+        faq: faq,
         room: props.room,
         login: undefined,
         name: undefined,
@@ -39,7 +43,7 @@ class Lecturer extends React.Component {
         loading: (credentials !== undefined && credentials !== '') ? true : false,
 
         data: {
-            labels: ["I don't understand!", "Could you give an example?", "Could you slow down?", "Could you speed up?"],
+            labels: faq,
             datasets: [{
                 label: '',
                 data: [0, 0, 0, 0],
@@ -78,6 +82,8 @@ class Lecturer extends React.Component {
     }
 
     this.updateSetQuestionTextField = this.updateSetQuestionTextField.bind(this);
+    this.send_email = this.send_email.bind(this);
+    this.updateBarChart = this.updateBarChart.bind(this);
     this.ask = this.ask.bind(this);
 
     if(credentials !== undefined && credentials !== ''){
@@ -86,17 +92,11 @@ class Lecturer extends React.Component {
         let map2 = new HashMap();
         map.copy(questionMaps.sqm);
         map2.copy(questionMaps.lqm);
-        let dataNew = this.state.data;
-        dataNew.datasets[0].data = [
-          map.get("I don't understand!") ? map.get("I don't understand!").count : null,
-          map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
-          map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
-          map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
+        this.updateBarChart(map);
         this.setState({
             studentQuestionMap: map,
             lecturerQuestionMap:map2,
             room: this.state.room,
-            data: dataNew,
             options: this.state.options,
             loading: false
         })
@@ -123,15 +123,10 @@ class Lecturer extends React.Component {
           else
             map.set(received_question.question, received_question.data);
             let dataNew = this.state.data;
-            dataNew.datasets[0].data=[
-              map.get("I don't understand!") ? map.get("I don't understand!").count : null,
-              map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
-              map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
-              map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
-          this.setState({
+            this.updateBarChart(map);
+            this.setState({
               studentQuestionMap: map,
               room: this.state.room,
-              data: dataNew,
               options: this.state.options
           })
         }
@@ -152,16 +147,10 @@ class Lecturer extends React.Component {
     onStudentQuestionAnswered(question => {
         let map = this.state.studentQuestionMap;
         map.delete(question);
-        let dataNew = this.state.data;
-        dataNew.datasets[0].data=[
-          map.get("I don't understand!") ? map.get("I don't understand!").count : null,
-          map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
-          map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
-          map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
+        this.updateBarChart(map);
         this.setState({
             studentQuestionMap: map,
             room: this.state.room,
-            data: dataNew,
             options: this.state.options
         })
     });
@@ -178,22 +167,23 @@ class Lecturer extends React.Component {
     onClearAll(() => {
         let map = new HashMap();
         let map2 = new HashMap();
-        let dataNew=this.state.data;
-        dataNew.datasets[0].data=[
-          map.get("I don't understand!") ? map.get("I don't understand!").count : null,
-          map.get("Could you give an example?") ? map.get("Could you give an example?").count : null,
-          map.get("Could you slow down?") ? map.get("Could you slow down?").count : null,
-          map.get("Could you speed up?") ? map.get("Could you speed up?").count : null];
+        this.updateBarChart(map);
         this.setState({
         studentQuestionMap: map,
         lecturerQuestionMap: map2,
-        room: this.state.room,
-        data: dataNew,
-        options: this.state.options
         });
     });
   }
 
+  updateBarChart(map) {
+    var dataNew=this.state.data;
+    dataNew.datasets[0].data=[
+      map.get(this.state.faq[0]) ? map.get(this.state.faq[0]).count : null,
+      map.get(this.state.faq[1]) ? map.get(this.state.faq[1]).count : null,
+      map.get(this.state.faq[2]) ? map.get(this.state.faq[2]).count : null,
+      map.get(this.state.faq[3]) ? map.get(this.state.faq[3]).count : null];
+    this.setState({data: dataNew})
+  }
 
   updateSetQuestionTextField(e) {
     this.setState({setQuestionTextField: e.target.value});
@@ -245,6 +235,14 @@ class Lecturer extends React.Component {
       //Error
     })
 
+  }
+
+  send_email(question) {
+      let mail_link = "mailto:";
+      question[1].users.forEach(user => {
+        mail_link = mail_link + user.login + "@ic.ac.uk, ";
+      });
+      window.open(mail_link)
   }
 
   logout(){
@@ -392,10 +390,7 @@ class Lecturer extends React.Component {
     let studentQuestions = [];
     this.state.studentQuestionMap.keys().forEach(
       function(key) {
-        if(key !== "I don't understand!" &&
-           key !== "Could you give an example?" &&
-           key !== "Could you speed up?" &&
-           key !== "Could you slow down?")
+        if(!this.state.faq.includes(key))
         {studentQuestions.push([key, this.state.studentQuestionMap.get(key)]);}
       }, this)
     studentQuestions.sort(
@@ -403,15 +398,6 @@ class Lecturer extends React.Component {
         return b[1].count - a[1].count;
       }
     )
-
-/*
-    function generate_mail_link(question) {
-      let mail_link = "mailto:";
-      question[1].users.forEach(user => {
-        mail_link = mail_link + user.login + "@ic.ac.uk, ";
-      });
-      return mail_link
-    } */
 
     let studentQuestionList = studentQuestions.map((question) =>
     <div key={question[0]} className="row longWord">
@@ -424,7 +410,8 @@ class Lecturer extends React.Component {
       </div>
         <div className = "input-group-append my-4">
         <button className="btn btn-outline-warning" onClick={()=>answerStudentQuestion(question[0], "Answered in lecture", this.state.room)}>Answered</button>
-        <button className="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by email", this.state.room)}}>Answer askers via email</button>
+        <button class="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by email", this.state.room);
+                                                              this.send_email(question)}}>Answer askers via email</button>
         <button className="btn btn-outline-warning" onClick={()=>{answerStudentQuestion(question[0], "Answered by class", this.state.room);
                                                               this.setState({setQuestionTextField : question[0]});
                                                               this.ask("text")}}>Send question to class</button>

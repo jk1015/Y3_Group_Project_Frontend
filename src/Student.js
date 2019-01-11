@@ -76,27 +76,22 @@ class Student extends Component {
     onQuestionReceived(received_question => {
 
       if (received_question.type === "student") {
+
         let map = this.state.studentQuestionMap;
-        if( received_question.data == null || received_question.data.count <= 0) {
+        let myQuestions = this.state.myQuestions;
+
+        if(received_question.data == null || received_question.data.count <= 0) {
             map.delete(received_question.question);
+            myQuestions.delete(received_question.question)
           } else {
             map.set(received_question.question, received_question.data.count);
-          }
-
-          this.setState({
-            studentQuestionMap: map
-          });
-
-          let myQuestions = this.state.myQuestions;
-          if (received_question.user === this.state.login) {
-            if (received_question.data == null || received_question.data.count <= 0) {
-              myQuestions.delete(received_question.question)
-            } else {
+            if (received_question.user == this.state.login) {
               myQuestions.set(received_question.question, received_question.question_id);
             }
           }
 
           this.setState({
+            studentQuestionMap: map
             myQuestions: myQuestions
           })
         }
