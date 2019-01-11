@@ -1,10 +1,8 @@
 import openSocket from 'socket.io-client';
 
-//NOTE: Don't deploy to heroku! LDAP access can only be done whilst in DoC!
-//const socket = openSocket('group26-backend.herokuapp.com');
-
-//const socket = openSocket('http://cloud-vm-45-130.doc.ic.ac.uk:8080/')
-const socket = openSocket('http://localhost:8080');
+const address = 'http://localhost:8080';
+//const address = 'http://cloud-vm-45-130.doc.ic.ac.uk:8080/'
+const socket = openSocket(address);
 
 function joinRoom(credentials, room, userType) {
     socket.emit("join room", credentials, room, userType);
@@ -100,6 +98,7 @@ function onCourseDataReceived(cb) {
 }
 
 export {
+    address,
     joinRoom,
     onClearAll,
     onDisconnect,

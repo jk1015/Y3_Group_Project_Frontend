@@ -1,5 +1,6 @@
 import React, {} from 'react';
 import { Scatter } from 'react-chartjs-2';
+import { address } from './api';
 
 const cookieHandler = require('./CookieHandler');
 
@@ -259,8 +260,7 @@ class Visualization extends React.Component {
   }
 
   componentDidMount(){
-    //TODO: THIS IS BADDDDDDD
-    fetch('http://localhost:8080/data/' + this.state.course, {
+    fetch(address + '/data/' + this.state.course, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
