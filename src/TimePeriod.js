@@ -13,7 +13,6 @@ class TimePeriod extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
     const credentials = cookieHandler.getCookie("auth");
 
     this.state ={
@@ -48,12 +47,9 @@ class TimePeriod extends React.Component {
     this.setState({end_hour: e.target.value});
   }
   search() {
-    var dayTime=this.state.month+'/'+this.state.day+'/'+this.state.year;
-    var begin=new Date(dayTime).getTime()+this.state.begin_hour*3600000;
-    var end=new Date(dayTime).getTime()+this.state.end_hour*3600000;
-    // console.log(dayTime);
-    // console.log(begin);
-    // console.log(end);
+    let dayTime=this.state.month+'/'+this.state.day+'/'+this.state.year;
+    let begin=new Date(dayTime).getTime()+this.state.begin_hour*3600000;
+    let end=new Date(dayTime).getTime()+this.state.end_hour*3600000;
     let url = '/visualization/' + this.state.course +'/'+ begin + '/' + end;
     window.location.href = url;
     redirectTo('/visualization/' + this.state.course +'/'+ begin + '/' + end);
@@ -64,15 +60,15 @@ class TimePeriod extends React.Component {
         <h2 className="display-4 my-5">Input the time period you want to search!</h2>
         <form className="container text-left">
           <div className="form-group">
-          <label for="year">year</label>
-          <select class="form-control" id="year" defaultValue={this.state.year} onChange={this.updateYear.bind(this)}>
+          <label htmlFor="year">year</label>
+          <select className="form-control" id="year" defaultValue={this.state.year} onChange={this.updateYear.bind(this)}>
             <option value="2019">2019</option>
             <option value="2018">2018</option>
           </select>
           </div>
-          <div class="form-group">
-          <label for="month">month</label>
-          <select class="form-control" id="month" defaultValue={this.state.month} onChange={this.updateMonth.bind(this)}>
+          <div className="form-group">
+          <label htmlFor="month">month</label>
+          <select className="form-control" id="month" defaultValue={this.state.month} onChange={this.updateMonth.bind(this)}>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -87,9 +83,9 @@ class TimePeriod extends React.Component {
             <option value="12">12</option>
           </select>
           </div>
-          <div class="form-group">
-          <label for="day">day</label>
-          <select class="form-control" id="day" defaultValue={this.state.day} onChange={this.updateDay.bind(this)}>
+          <div className="form-group">
+          <label htmlFor="day">day</label>
+          <select className="form-control" id="day" defaultValue={this.state.day} onChange={this.updateDay.bind(this)}>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -123,9 +119,9 @@ class TimePeriod extends React.Component {
             <option value="31">31</option>
           </select>
           </div>
-          <div class="form-group">
-          <label for="begin">hour at begin</label>
-          <select class="form-control" id="begin" defaultValue={this.state.begin_hour} onChange={this.updateBegin.bind(this)}>
+          <div className="form-group">
+          <label htmlFor="begin">hour at begin</label>
+          <select className="form-control" id="begin" defaultValue={this.state.begin_hour} onChange={this.updateBegin.bind(this)}>
             <option value="7">7</option>
             <option value="8">8</option>
             <option value="9">9</option>
@@ -144,9 +140,9 @@ class TimePeriod extends React.Component {
             <option value="22">22</option>
           </select>
           </div>
-          <div class="form-group">
-          <label for="end">hour at end</label>
-          <select class="form-control" id="end" defaultValue={this.state.end_hour} onChange={this.updateEnd.bind(this)}>
+          <div className="form-group">
+          <label htmlFor="end">hour at end</label>
+          <select className="form-control" id="end" defaultValue={this.state.end_hour} onChange={this.updateEnd.bind(this)}>
             <option value="8">8</option>
             <option value="9">9</option>
             <option value="10">10</option>

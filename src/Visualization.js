@@ -7,7 +7,6 @@ class Visualization extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
     const credentials = cookieHandler.getCookie("auth");
 
     this.state ={
@@ -88,8 +87,8 @@ class Visualization extends React.Component {
                 {
                   if(tick === (props.end-props.begin) / 1000)
                     return '';
-                  var second = tick % 60;
-                  var minute = (tick-second)/60;
+                  let second = tick % 60;
+                  let minute = (tick-second)/60;
 									return ((minute-minute%10)/10).toString() + (minute%10).toString() + ':' + ((second-second%10)/10).toString() + (second%10).toString();
 							  },
                 max:(props.end-props.begin)/1000
@@ -112,8 +111,8 @@ class Visualization extends React.Component {
       }
   }
   makeData(data){
-    // var q={};
-    // for(var i=0;i<data.questions.length;i++)
+    // let q={};
+    // for(let i=0;i<data.questions.length;i++)
     // {
     //   if("course" in data.questions[i])
     //   {
@@ -132,8 +131,8 @@ class Visualization extends React.Component {
     //     }
     //   }
     // }
-    // var totalQuestionsCount={};
-    // for(var key in q)
+    // let totalQuestionsCount={};
+    // for(let key in q)
     // {
     //   if(key in totalQuestionsCount)
     //   {
@@ -158,14 +157,14 @@ class Visualization extends React.Component {
     //     totalQuestionsCount[key][q[key][0]][q[key][0]]--;
     //   }
     // }
-    // var totalQuestionsCount;
-    // var dataNew=this.state.data;
+    // let totalQuestionsCount;
+    // let dataNew=this.state.data;
     // dataNew.datasets=[];
-    // // for(var key1 in totalQuestionsCount)
+    // // for(let key1 in totalQuestionsCount)
     // // {
-    // var key1=this.state.course;
-    var q={};
-    for(var i=0;i<data.questions.length;i++)
+    // let key1=this.state.course;
+    let q={};
+    for(let i=0;i<data.questions.length;i++)
     {
       if(!(data.questions[i].question in q))
       {
@@ -186,24 +185,24 @@ class Visualization extends React.Component {
         }
       }
     }
-    var beginSecond=(this.state.begin-this.state.begin%1000)/1000;
-    var endSecond=(this.state.end-this.state.end%1000)/1000;
-    var totalLen=endSecond-beginSecond;
-    var qCount={};
-    var dataNew=this.state.data;
+    let beginSecond=(this.state.begin-this.state.begin%1000)/1000;
+    let endSecond=(this.state.end-this.state.end%1000)/1000;
+    let totalLen=endSecond-beginSecond;
+    let qCount={};
+    let dataNew=this.state.data;
     dataNew.datasets=[];
-    for(var key in q)
+    for(let key in q)
     {
       qCount[key]=new Array(totalLen).fill(0);
-      for(i=0;i<q[key].length;i++)
+      for(let i=0;i<q[key].length;i++)
       {
         qCount[key][(q[key][i][0]-q[key][i][0]%1000)/1000-beginSecond]++;
         if(q[key][i][1])
           qCount[key][(q[key][i][1]-q[key][i][1]%1000)/1000-beginSecond]--;
       }
-      var lineData=[];
-      var count=0;
-      for(i=0;i<totalLen;i++)
+      let lineData=[];
+      let count=0;
+      for(let i=0;i<totalLen;i++)
       {
         if(qCount[key][i]!==0)
         {
@@ -212,7 +211,7 @@ class Visualization extends React.Component {
         }
       }
       lineData.push({x:totalLen,y:count});
-      var color="#"+((1<<24)*Math.random()|0).toString(16);
+      let color="#"+((1<<24)*Math.random()|0).toString(16);
       dataNew.datasets.push({
         label:key,
         borderColor:color,
@@ -235,11 +234,11 @@ class Visualization extends React.Component {
         data:lineData
       })
     }
-    // for(var key2 in totalQuestionsCount[key1])
+    // for(let key2 in totalQuestionsCount[key1])
     // {
-    //   var lineData=[];
-    //   var count=0;
-    //   for(var i=0;i<3600;i++)
+    //   let lineData=[];
+    //   let count=0;
+    //   for(let i=0;i<3600;i++)
     //   {
     //     if(totalQuestionsCount[key1][key2][i]!=0)
     //     {
@@ -256,14 +255,11 @@ class Visualization extends React.Component {
     //   })
     // }
     this.setState({data:dataNew});
-    console.log(this.state.data);
-    console.log("Joseph")
     // }
   }
 
   componentDidMount(){
-
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+    //TODO: THIS IS BADDDDDDD
     fetch('http://localhost:8080/data/' + this.state.course, {
       method: 'POST',
       headers: {
@@ -278,7 +274,6 @@ class Visualization extends React.Component {
       return res.json();
     })
     .then(data =>{
-      console.log(data);
       this.makeData(data);
     })
     .catch((err) => {

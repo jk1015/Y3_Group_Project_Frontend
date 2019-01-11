@@ -2,7 +2,7 @@
   '<head>' +
     '<script src="/socket.io/socket.io.js"></script>' +
     '<script>' +
-      'var socket = io();' +
+      'let socket = io();' +
       'socket.on("question received", function(res){' +
          'printResult(res.question)' +
       '});' +
@@ -18,4 +18,4 @@
     '<button onClick="{() => this.ask()}">Ask</button>' +
     '</div>' +
   '</body>' +
-'</html>' 
+'</html>'

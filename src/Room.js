@@ -12,21 +12,21 @@ import {
     Footer
 } from './api';
 
-var HtmlToReactParser = require('html-to-react').Parser;
-var htmlToReactParser = new HtmlToReactParser();
+let HtmlToReactParser = require('html-to-react').Parser;
+let htmlToReactParser = new HtmlToReactParser();
 const HashMap = require('hashmap');
 
 function makeRoom(room) {
   let html_component =
-    '<div class="question">' +
+    '<div className="question">' +
       '<p>' + room.toString() + '</p>' +
-      '<div class="button_info">' +
-        '<a class="question_link" href="/lecturer/' + room.toString() + '">' +
+      '<div className="button_info">' +
+        '<a className="question_link" href="/lecturer/' + room.toString() + '">' +
           'goto lecturer room' +
         '</a>' +
       '</div>' +
-      '<div class="button_info">' +
-        '<a class="question_link" href="/student/' + room.toString() + '">' +
+      '<div className="button_info">' +
+        '<a className="question_link" href="/student/' + room.toString() + '">' +
           'goto student room' +
         '</a>' +
       '</div>' +

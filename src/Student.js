@@ -50,13 +50,13 @@ class Student extends Component {
         map.copy(questionMaps.sqm);
         map2.copy(questionMaps.lqm);
         let keys = map.keys();
-        for (var i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
           let key = keys[i];
           let val = map.get(key).count;
           map.set(key, val);
         }
         let keys2 = map2.keys();
-        for (i = 0; i < keys2.length; i++) {
+        for (let i = 0; i < keys2.length; i++) {
           let key = keys2[i];
           let val = {question: key, type: map2.get(key).type, options: map2.get(key).options};
           map2.set(key, val);
@@ -212,13 +212,13 @@ class Student extends Component {
 
   render_question(question_text) {
 
-    var question = this.state.lecturerQuestionMap.get(question_text);
+    let question = this.state.lecturerQuestionMap.get(question_text);
 
     if(question.type === "text") {
       return(
         <div>
           <h2 id="faq_instruction" className="display-4 my-0">{question.question}</h2>
-          <div class="row col-12">
+          <div className="row col-12">
           <input type="text" className="form-control my-0" placeholder="Answer here!" value={this.state.data} onChange={this.updateQuestionField}/>
           <div className="input-group-append my-0">
             <button className="btn btn-outline-dark px-4" type="button" onClick={() => {this.answer(question); this.setState({data:'', view:"main"})}}>Submit</button>
@@ -229,11 +229,11 @@ class Student extends Component {
     }
 
     if(question.type === "multiple choice") {
-      var optionList = question.options.map((option) =>
-      <div class="row longWord" key={option}>
-        <hr class=" w-100"/>
-        <p class="col-8 text-left">{option}</p>
-        <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
+      let optionList = question.options.map((option) =>
+      <div className="row longWord" key={option}>
+        <hr className=" w-100"/>
+        <p className="col-8 text-left">{option}</p>
+        <button className="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
                 onClick={()=>{this.setState({data:option}); this.answer(question); this.setState({data:'', view:"main"})}}>Submit</button>
       </div>
       );
@@ -248,7 +248,7 @@ class Student extends Component {
   }
 
   render() {
-    var studentQuestions = [];
+    let studentQuestions = [];
 
     this.state.studentQuestionMap.keys().forEach(
       function(key) {
@@ -265,26 +265,26 @@ class Student extends Component {
       }
     )
 
-    var studentQuestionList = studentQuestions.map((question) =>
-    <div class="row longWord" key={question[0]}>
-      <hr class=" w-100"/>
-      <div class="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
-        <p class="col-8 text-left">{question[0]}</p>: <p class="col-3">{question[1]}</p>
+    let studentQuestionList = studentQuestions.map((question) =>
+    <div className="row longWord" key={question[0]}>
+      <hr className=" w-100"/>
+      <div className="col-md-10 col-sm-9 col-xs-12 row text-right" key={question[0]}>
+        <p className="col-8 text-left">{question[0]}</p>: <p className="col-3">{question[1]}</p>
       </div>
         {!this.state.myQuestions.has(question[0])?
-          <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
-          <button class="btn badge-pill btn-outline-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Undo vote</button>
+          <button className="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.ask2(question[0])}>Vote</button>:
+          <button className="btn badge-pill btn-outline-danger col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12" onClick={()=>this.removeAsk(question[0])}>Undo vote</button>
         }
       </div>
     );
 
-    var lecturerQuestions = this.state.lecturerQuestionMap.keys();
+    let lecturerQuestions = this.state.lecturerQuestionMap.keys();
 
-    var lecturerQuestionList = lecturerQuestions.map((question_text) =>
-    <div class="row">
-      <hr class=" w-100"/>
-      <p class="col-8 text-left">{question_text}</p>
-          <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
+    let lecturerQuestionList = lecturerQuestions.map((question_text) =>
+    <div className="row">
+      <hr className=" w-100"/>
+      <p className="col-8 text-left">{question_text}</p>
+          <button className="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
           onClick={() => this.setState({view: question_text})}>Answer</button>
       </div>
     );

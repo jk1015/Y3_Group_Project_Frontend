@@ -8,6 +8,10 @@ import {
 } from './api';
 import { ClipLoader } from 'react-spinners';
 
+// Flag determines whether to join room 000 automatically
+const testing = true;
+
+
 const cookieHandler = require('./CookieHandler');
 
 function redirectTo(url, logout) {
@@ -67,6 +71,9 @@ class Join extends Component {
         displayName : course.displayName,
         login : course.login
       });
+      if (testing && this.state.currentcourse === undefined) {
+        this.setState({currentcourse : "000"});
+      }
       if (!isLecturer) {
         this.redirectToRoom();
       }
@@ -78,9 +85,7 @@ class Join extends Component {
     });
 
     onCourseDataReceived(data => {
-      // console.log(data);
       this.setState({courseData : data});
-      // console.log(this.getAllLectureTimes(data.events));
     });
   }
 
@@ -187,13 +192,13 @@ class Join extends Component {
       let courseList, allCourseButtons;
       if(this.state.courses){
         courseList = this.state.courses.map((course) =>
-          <p>{course}</p>);
+          <p key={course}>{course}</p>);
 
         allCourseButtons = this.state.courses.map((course) =>
-          <button type="button" onClick={()=>this.getCourseTimes(course)}>{course}</button>);
+          <button key={course} type="button" onClick={()=>this.getCourseTimes(course)}>{course}</button>);
       }
 
-      var courseButton = null;
+      let courseButton = null;
       if (this.state.currentcourse !== undefined) {
         courseButton =
           <div>
@@ -203,22 +208,13 @@ class Join extends Component {
             </button>
           </div>
       } else {
-        this.setState({currentcourse : "000"});
         courseButton =
           <div>
             <h2>No lectures in progress.</h2>
             <p>If you think you should be in a lecture, check your enrolment below.</p>
           </div>
       }
-      courseButton =
-        <div>
-          <h2>Lecture in progress:</h2>
-          <button type="button" onClick={()=>this.redirectToRoom()}>
-            Join {this.state.currentcourse}
-          </button>
-        </div>
-
-      var courseDisplay = null;
+      let courseDisplay = null;
       if (this.state.courses && this.state.courses.length > 0) {
         courseDisplay =
           <div>
