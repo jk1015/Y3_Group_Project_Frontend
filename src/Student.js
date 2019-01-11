@@ -9,78 +9,12 @@ import { askQuestion,
   stopAsking,
   onQuestionReceived,
   onDisconnect,
-  Header,
-  Footer,
   onJoinError,
   onRelogin
 } from './api';
 
-//var student_page = require('./student.html.js');
-const HtmlToReactParser = require('html-to-react').Parser;
-const htmlToReactParser = new HtmlToReactParser();
 const HashMap = require('hashmap');
 const cookieHandler = require('./CookieHandler');
-
-var html_page =
-      '<script src="/socket.io/socket.io.js"></script>' +
-      '<script>' +
-        'var socket = io();' +
-        'socket.on("question received", function(res){' +
-           'printResult(res.question)' +
-        '});' +
-        'function printResult(message) {' +
-          'document.getElementById("res").innerHTML = message;' +
-        '}' +
-        'function ask() {' +
-          'socket.emit("question asked", "just a // QUESTION: ")' +
-        '}' +
-      '</script>' +
-      '<div>' +
-        '<p>Student Haya</p>' +
-        '<p id="res"></p>' +
-        '<button onclick="this.ask()">Ask</button>' +
-        '<script>' +
-          'ask();' +
-        '</script>' +
-      '</div>';
-
-var header =
-  '<div id="header">' +
-    '<p>Student Section</p>' +
-  '</div>';
-
-// onQuestionReceived(printMsg());
-//
-// function printMsg(q) {
-//   console.log(q);
-// }
-
-
-function makeQuestion(question) {
-  return '<div class="question">' +
-           '<p>' + question + '</p>' +
-         '</div>';
-}
-
-function Questions(props) {
-  // let i;
-  // let questions = props.value;
-  // let res = "<div id='questions'>";
-  // // if (questions.length > 0) {
-  // //   res = <div class="question"><p>{questions[questions.length-1]}</p></div>
-  // // }
-  // for (i = 0; i < questions.length; i++) {
-  //   res = res + makeQuestion(questions[i]);
-  // }
-  // res = res + '</div>'
-  // let jsx_res = htmlToReactParser.parse(res);
-  // return (
-  //   jsx_res
-  // );
-}
-
-var jsx_page = htmlToReactParser.parse(html_page);
-var jsx_header = htmlToReactParser.parse(header);
 
 class Student extends Component {
 
@@ -122,7 +56,7 @@ class Student extends Component {
           map.set(key, val);
         }
         let keys2 = map2.keys();
-        for (var i = 0; i < keys2.length; i++) {
+        for (i = 0; i < keys2.length; i++) {
           let key = keys2[i];
           let val = {question: key, type: map2.get(key).type, options: map2.get(key).options};
           map2.set(key, val);
@@ -141,7 +75,7 @@ class Student extends Component {
 
     onQuestionReceived(received_question => {
 
-      if (received_question.type == "student") {
+      if (received_question.type === "student") {
         let map = this.state.studentQuestionMap;
         if( received_question.data == null || received_question.data.count <= 0) {
             map.delete(received_question.question);
@@ -280,7 +214,7 @@ class Student extends Component {
 
     var question = this.state.lecturerQuestionMap.get(question_text);
 
-    if(question.type == "text") {
+    if(question.type === "text") {
       return(
         <div>
           <h2 id="faq_instruction" className="display-4 my-0">{question.question}</h2>
@@ -294,13 +228,13 @@ class Student extends Component {
         )
     }
 
-    if(question.type == "multiple choice") {
+    if(question.type === "multiple choice") {
       var optionList = question.options.map((option) =>
       <div class="row longWord" key={option}>
         <hr class=" w-100"/>
         <p class="col-8 text-left">{option}</p>
         <button class="btn badge-pill btn-outline-success col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-12"
-                onClick={()=>{this.state.data = option; this.answer(question); this.setState({data:'', view:"main"})}}>Submit</button>
+                onClick={()=>{this.setState({data:option}); this.answer(question); this.setState({data:'', view:"main"})}}>Submit</button>
       </div>
       );
 
@@ -365,7 +299,6 @@ class Student extends Component {
       <div>
       {lecturerQuestionList}
       </div>
-        <h2 id="faq_instruction" className="display-4 my-0"></h2>
         <div id="input_bar" className="input-group">
           <input type="text" className="form-control my-0" placeholder="Ask your question here" value={this.state.data} onChange={this.updateQuestionField}/>
           <div className="input-group-append my-0">
